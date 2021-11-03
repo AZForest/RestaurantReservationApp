@@ -68,19 +68,35 @@ function NewReservation(props) {
     function handleSubmit(e) {
         e.preventDefault(); 
         const date = formData.reservation_date;
+        let testObject = {
+            first_name: "Z",
+            last_name: "J",
+            birthday: "M",
+            mobile_number: "X",
+            reservation_date: "0",
+            reservation_time: "9",
+            people: "0"
+        }
         axios.post('http://localhost:5000/reservations/new', formData)
         .then(res => {
             console.log(res);
             setFormData(formStructure);
             history.push(`/dashboard?date=${date}`);
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            if (err.response && err.response.data) {
+                console.log(err.response);
+                console.log(err.response.data.error) // some reason error message
+            }
+            setError(err)
+        });
     }
 
     return (
         <div>
             {props.text}
             <h2>Make a Reservation</h2>
+            <ErrorAlert error={error} />
             <form onSubmit={(event) => handleSubmit(event)}>
                 <label htmlFor="first_name" style={{color: "green"}}>
                     First Name:
