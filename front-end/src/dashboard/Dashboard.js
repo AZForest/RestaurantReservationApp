@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation, Link } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { listReservations } from "../utils/api";
 import { today, previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
@@ -15,29 +15,64 @@ function Dashboard({ curDate }) {
   /*const months = {
     1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31
   }*/
+  let x;
+  const location = useLocation();
+  location.search ? x = location.search.slice(6) : x = curDate;
 
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const [date, setDate] = useState(curDate);
+  const [date, setDate] = useState(x);
   const history = useHistory();
-  const location = useLocation();
+  
 
-  useEffect(loadDashboard, [date]);
-
-  function loadDashboard() {
-    console.log(location);
+  /*useEffect(() => {
+    //console.log(location.pathname); // result: '/secondpage'
+    //console.log(location.search); // result: '?query=abc'
+    //console.log(location.state); // result: 'some_value'
     if (location.search) {
       let queryName = location.search.slice(1, 5);
       if (queryName === "date") {
         try {
           let queryDate = location.search.slice(6);
-          console.log(queryDate);
+          //console.log(queryDate);
           setDate(queryDate);
         } catch (err) {
           alert("Invalid Date");
         }
       }
     }
+  }, [location]);*/
+  useEffect(loadDashboard, [date]);
+
+  function loadDashboard() {
+    console.log(date);
+    //console.log(location);
+    console.log(location.search);
+    /*if (location.search) {
+      let queryName = location.search.slice(1, 5);
+      if (queryName === "date") {
+        try {
+          let queryDate = location.search.slice(6);
+          //console.log(queryDate);
+          setDate(queryDate);
+        } catch (err) {
+          alert("Invalid Date");
+        }
+      }
+    }*/
+    //Working Below
+    /*if (location.search) {
+      let queryDate = location.search.slice(6);
+      const abortController = new AbortController();
+      setReservationsError(null);
+      listReservations({ date: queryDate }, abortController.signal)
+        .then((res) => {
+          //console.log(res)
+          setReservations(res)
+        })
+        .catch(setReservationsError);
+      return () => abortController.abort();
+    } else {*/
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
@@ -47,19 +82,26 @@ function Dashboard({ curDate }) {
       })
       .catch(setReservationsError);
     return () => abortController.abort();
+    //}
   }
 
   function alterQuery(val) {
     if (val === "prev") {
       const prevDate = previous(date);
-      location.search = `?date=${prevDate}`;
+      //location.search = `?date=${prevDate}`;
       setDate(prevDate);
-      history.push(`/dashboard${location.search}`)
+      history.push({
+        pathname: `/dashboard`,
+        search: `?date=${prevDate}`
+      })
     } else if (val === "next") {
       const nextDate = next(date);
-      location.search = `?date=${nextDate}`;
+      //location.search = `?date=${nextDate}`;
       setDate(nextDate);
-      history.push(`/dashboard${location.search}`)
+      history.push({
+        pathname: `/dashboard`,
+        search: `?date=${nextDate}`
+      })
     } else {
       location.search = ``;
       setDate(curDate);

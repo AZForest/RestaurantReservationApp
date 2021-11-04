@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ErrorAlert from '../layout/ErrorAlert';
+const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
 
 function NewReservation(props) {
     const history = useHistory();
@@ -68,7 +69,7 @@ function NewReservation(props) {
     function handleSubmit(e) {
         e.preventDefault(); 
         const date = formData.reservation_date;
-        let testObject = {
+        /*let testObject = {
             first_name: "Z",
             last_name: "J",
             birthday: "M",
@@ -76,12 +77,15 @@ function NewReservation(props) {
             reservation_date: "0",
             reservation_time: "9",
             people: "0"
-        }
-        axios.post('http://localhost:5000/reservations/new', formData)
+        }*/
+        axios.post(`${BASE_URL}/reservations/new`, formData)
         .then(res => {
-            console.log(res);
-            setFormData(formStructure);
-            history.push(`/dashboard?date=${date}`);
+            //history.push(`/dashboard?date=${date}`);
+            history.push({
+                pathname: `/dashboard`,
+                search: `?date=${date}`,
+                state: { date: "hi" }
+            })
         })
         .catch(err => {
             if (err.response && err.response.data) {

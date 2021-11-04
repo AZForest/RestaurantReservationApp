@@ -62,7 +62,7 @@ export async function listReservations(params, signal) {
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
-  //console.log(url);
+  console.log("Being called: " + url);
   return await fetchJson(url, { headers, signal }, [])
     .then((res) => {
       //console.log(res);
