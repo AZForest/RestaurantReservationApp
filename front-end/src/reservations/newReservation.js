@@ -78,9 +78,8 @@ function NewReservation(props) {
             reservation_time: "9",
             people: "0"
         }*/
-        axios.post(`${BASE_URL}/reservations/new`, formData)
+        axios.post(`${BASE_URL}/reservations`, { data: formData } )
         .then(res => {
-            //history.push(`/dashboard?date=${date}`);
             history.push({
                 pathname: `/dashboard`,
                 search: `?date=${date}`,
@@ -122,11 +121,12 @@ function NewReservation(props) {
                            required />
                 </label>
                 <br />
+                {/*pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"*/}
                 <label htmlFor="mobile_number" style={{color: "green"}}>
                     Mobile Number:
                     <input value={formData["mobile_number"]}
                            type="text"
-                           pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                           pattern="[0-9]{3}-[0-9]{4}"
                            placeholder="888-888-8888"
                            id="mobile_number" 
                            name="mobile_number"
@@ -157,7 +157,6 @@ function NewReservation(props) {
                 <label htmlFor="people" style={{color: "green"}}>
                     Number of People in Party:
                     <input value={formData["people"]}
-                           value={formData["people"]}
                            type="number"
                            id="people" 
                            name="people"

@@ -8,6 +8,7 @@ function listByDate(date) {
     return knex("reservations")
                .select("*")
                .where({ reservation_date: date })
+
 }
 
 function create(reservation) {
@@ -16,7 +17,7 @@ function create(reservation) {
       .insert(reservation)
       .returning("*")
       .then((createdRecords) => {
-        //console.log("This is createdR: " + createdRecords)
+        //console.log(createdRecords)
         return createdRecords[0];
       });
 }

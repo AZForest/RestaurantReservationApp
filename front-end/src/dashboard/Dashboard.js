@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { listReservations } from "../utils/api";
-import { today, previous, next } from "../utils/date-time";
+import { previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
-import axios from 'axios';
 
 /**
  * Defines the dashboard page.
@@ -24,24 +23,6 @@ function Dashboard({ curDate }) {
   const [date, setDate] = useState(x);
   const history = useHistory();
   
-
-  /*useEffect(() => {
-    //console.log(location.pathname); // result: '/secondpage'
-    //console.log(location.search); // result: '?query=abc'
-    //console.log(location.state); // result: 'some_value'
-    if (location.search) {
-      let queryName = location.search.slice(1, 5);
-      if (queryName === "date") {
-        try {
-          let queryDate = location.search.slice(6);
-          //console.log(queryDate);
-          setDate(queryDate);
-        } catch (err) {
-          alert("Invalid Date");
-        }
-      }
-    }
-  }, [location]);*/
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
