@@ -43,6 +43,7 @@ const hasRequiredProperties = (req, res, next) => {
   }
 }
 
+//US-01
 const validateDateTimePeople = (req, res, next) => {
   const { reservation_date: date, reservation_time: time, people } = res.locals.data;
   if (new Date(date) === "Invalid Date" || isNaN(new Date(date))) {
@@ -61,6 +62,36 @@ const validateDateTimePeople = (req, res, next) => {
   if (typeof people !== "number") {
     next({
       message: "people must be a number",
+      status: 400
+    })
+  }
+  next();
+}
+
+//US-02
+const validateTargetDate = (req, res, next) => {
+  const { reservation_date: date, reservation_time: time } = res.locals.data;
+  const targetDate = new Date(date);
+  if (targetDate.getDay() === 1) {
+    next({
+      message: "Restaurant is closed on Tuesdays.",
+      status: 400
+    })
+  }
+  if (Date.now() > targetDate.getTime()) {
+    next({
+      message: "Reservation must be in the future.",
+      status: 400
+    })
+  }
+  let timeArray = time.split(":");
+  let timeToInt = parseInt(timeArray.reduce((acc, cur) => {
+      return acc + cur;
+  }, ""));
+  let openingTime = 1030, closingTime = 2130;
+  if (timeToInt < openingTime || timeToInt > closingTime) {
+    next({
+      message: 'Reservation must be between 10:30am and 9:30pm',
       status: 400
     })
   }
@@ -104,5 +135,9 @@ async function create(req, res, next) {
 
 module.exports = {
   list,
-  create: [hasOnlyValidProperties, hasRequiredProperties, validateDateTimePeople, asyncErrorBoundary(create)]
+  create: [hasOnlyValidProperties, 
+           hasRequiredProperties, 
+           validateDateTimePeople, 
+           validateTargetDate,
+           asyncErrorBoundary(create)]
 };

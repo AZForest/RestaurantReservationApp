@@ -62,37 +62,61 @@ function NewReservation(props) {
         }
     }
 
-    function checkFormData() {
-        console.log(formData)
+    function validateInput() {
+        const date = formData.reservation_date;
+        const time = formData.reservation_time;
+
+        const targetDate = new Date(date);
+        const errors = [];
+        //Checks if Day is Tuesday
+        if (targetDate.getDay() === 1) {
+            const dateError = new Error();
+            dateError.message = "We are not open Tuesdays."
+            errors.push(dateError);
+        }
+        //Check if reservation is in the past
+        if (Date.now() >= targetDate.getTime()) {
+            const timeError = new Error("Reservations must be in the future.")
+            errors.push(timeError);
+        }
+        //Checks if Res Time is between 10:30am - 9:30pm
+        let timeArray = time.split(":");
+        let timeToInt = parseInt(timeArray.reduce((acc, cur) => {
+            return acc + cur;
+          }, ""));
+        let openingTime = 1030;
+        let closingTime = 2130;
+        if (timeToInt < openingTime || timeToInt > closingTime) {
+            const validTimeError = new Error("Reservation must be between 10:30am and 9:30pm.")
+            errors.push(validTimeError);
+        }
+        if (errors.length > 0) {
+            setError(errors);
+            //return false;
+        }
+        return true;
     }
 
     function handleSubmit(e) {
         e.preventDefault(); 
         const date = formData.reservation_date;
-        /*let testObject = {
-            first_name: "Z",
-            last_name: "J",
-            birthday: "M",
-            mobile_number: "X",
-            reservation_date: "0",
-            reservation_time: "9",
-            people: "0"
-        }*/
-        axios.post(`${BASE_URL}/reservations`, { data: formData } )
-        .then(res => {
-            history.push({
-                pathname: `/dashboard`,
-                search: `?date=${date}`,
-                state: { date: "hi" }
+        if (validateInput()) {
+            axios.post(`${BASE_URL}/reservations`, { data: formData } )
+            .then(res => {
+                history.push({
+                    pathname: `/dashboard`,
+                    search: `?date=${date}`,
+                    state: { date: "hi" }
+                })
             })
-        })
-        .catch(err => {
-            if (err.response && err.response.data) {
-                console.log(err.response);
-                console.log(err.response.data.error) // some reason error message
-            }
-            setError(err)
-        });
+            .catch(err => {
+                if (err.response && err.response.data) {
+                    console.log(err.response);
+                    console.log(err.response.data.error) // some reason error message
+                }
+                setError(err)
+            });
+        }
     }
 
     return (
@@ -126,7 +150,6 @@ function NewReservation(props) {
                     Mobile Number:
                     <input value={formData["mobile_number"]}
                            type="text"
-                           pattern="[0-9]{3}-[0-9]{4}"
                            placeholder="888-888-8888"
                            id="mobile_number" 
                            name="mobile_number"
@@ -168,7 +191,6 @@ function NewReservation(props) {
                 <button type="submit">Submit</button>
                 <button onClick={() => history.push("/")}>Cancel</button>
             </form>
-            <button onClick={() => checkFormData()}>Check Form Data</button>
         </div>
     )
 }
