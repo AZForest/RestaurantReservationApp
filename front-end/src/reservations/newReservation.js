@@ -105,8 +105,7 @@ function NewReservation(props) {
             .then(res => {
                 history.push({
                     pathname: `/dashboard`,
-                    search: `?date=${date}`,
-                    state: { date: "hi" }
+                    search: `?date=${date}`
                 })
             })
             .catch(err => {
@@ -189,7 +188,7 @@ function NewReservation(props) {
                 </label>
                 <br />
                 <button type="submit">Submit</button>
-                <button onClick={() => history.push("/")}>Cancel</button>
+                <button onClick={() => history.goBack()}>Cancel</button>
             </form>
         </div>
     )

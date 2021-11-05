@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
+import { Link } from 'react-router-dom';
 import { listReservations } from "../utils/api";
 import { previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
@@ -11,49 +12,22 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function Dashboard({ curDate }) {
-  /*const months = {
-    1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31
-  }*/
-  let x;
+
   const location = useLocation();
-  location.search ? x = location.search.slice(6) : x = curDate;
+  const x = location.search ? location.search.slice(6) : curDate;
 
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  //const [tables, setTables] = useState([]);
   const [date, setDate] = useState(x);
   const history = useHistory();
   
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
-    console.log(date);
+    //console.log(date);
     //console.log(location);
-    console.log(location.search);
-    /*if (location.search) {
-      let queryName = location.search.slice(1, 5);
-      if (queryName === "date") {
-        try {
-          let queryDate = location.search.slice(6);
-          //console.log(queryDate);
-          setDate(queryDate);
-        } catch (err) {
-          alert("Invalid Date");
-        }
-      }
-    }*/
-    //Working Below
-    /*if (location.search) {
-      let queryDate = location.search.slice(6);
-      const abortController = new AbortController();
-      setReservationsError(null);
-      listReservations({ date: queryDate }, abortController.signal)
-        .then((res) => {
-          //console.log(res)
-          setReservations(res)
-        })
-        .catch(setReservationsError);
-      return () => abortController.abort();
-    } else {*/
+    //console.log(location.search);
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
@@ -90,14 +64,24 @@ function Dashboard({ curDate }) {
     
   }
 
-  /*function loadDashboard2() {
-    axios.get('http://localhost:5000/reservations')
-    .then(res => {
-      console.log(res.data.data)
-      setReservations(res.data.data);
-    })
-    .catch(setReservationsError)
-  }*/
+  let sampleTableData = [
+    { 
+      table_id: 1,
+      table_name: "qwer",
+      capacity: 4,
+      reservation_id: 9
+    },
+    {
+      table_id: 2,
+      table_name: "asdf",
+      capacity: 3
+    },
+    {
+      table_id: 3,
+      table_name: "zxcv",
+      capacity: 5
+    }
+  ]
 
   /*function switchDate(e, day) {
     if (day === "Previous") {
@@ -126,6 +110,22 @@ function Dashboard({ curDate }) {
       setDate(curDate)
     }
   }*/
+  let tables = (
+    <div>
+      <h4>Tables</h4>
+      {sampleTableData.map(tab => {
+        return (
+          <div style={{backgroundColor: "ghostwhite"}}>
+            <p>Table Name: {tab.table_name}</p>
+            <p>Capacity: {tab.capacity}</p>
+            {tab.reservation_id ? 
+            <p data-table-id-status={tab.table_id}>Occupied</p>
+            : <p data-table-id-status={tab.table_id}>Free</p>}
+          </div>
+        )
+      })}
+    </div>
+  )
 
   return (
     <main>
@@ -137,20 +137,24 @@ function Dashboard({ curDate }) {
       {/*JSON.stringify(reservations)*/}
       {reservations ? reservations.map(res => {
         return (
-          <div key={Math.random()}>
+          <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
             <p>First name: {res.first_name}</p>
             <p>Last name: {res.last_name}</p>
             <p>Phone: {res.mobile_number}</p>
+            <p>Time: {res.reservation_time}</p>
+            <p>People: {res.people}</p>
+            <Link to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
             <br/>
           </div>
         )
       }) : ""}
-      <div>
+      <div className="m-3">
         <button onClick={() => alterQuery("prev")}>Previous</button>
         {/*<button onClick={() => setDate(previous(date))}>Previous</button>*/}
         <button onClick={() => alterQuery()}>Today</button>
         <button onClick={() => alterQuery("next")}>Next</button>
       </div>
+      {tables}
     </main>
   );
 }
