@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
 function NewTable(props) {
 
     const formStructure = {
         table_name: "",
-        capacity: 1
+        capacity: null
     }
 
     const [formData, setFormData] = useState(formStructure);
     const history = useHistory();
+    const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
 
     function updateForm(e, field) {
         if (field === "table_name") {
@@ -25,14 +27,24 @@ function NewTable(props) {
             }
             setFormData(newFormData);
         }
-        console.log(formData);
+    }
+
+    function submitHandler(e) {
+        e.preventDefault();
+        if (formData.capacity !== null) {
+            axios.post(`${BASE_URL}/tables`, { data: formData })
+            .then((res) => {
+                history.push("/dashboard");
+            })
+            .catch(err => console.log(err));
+        }
     }
 
     return (
         <div>
             <h2>New Table</h2>
             <br />
-            <form>
+            <form onSubmit={(e) => submitHandler(e)}>
                 <label htmlFor="table_name">
                     Table Name: 
                     <input value={formData["table_name"]}
@@ -45,13 +57,13 @@ function NewTable(props) {
                 </label>
                 <br />
                 <label htmlFor="capacity">
-                    Capcity:
+                    Capacity:
                     <input value={formData["capacity"]}
                            name="capacity"
                            id="capacity"
                            type="number"
                            min="1"
-                           onChange={(e, field = "capcity") => updateForm(e, field)}
+                           onChange={(e, field = "capacity") => updateForm(e, field)}
                            required />
                 </label>
                 <br />

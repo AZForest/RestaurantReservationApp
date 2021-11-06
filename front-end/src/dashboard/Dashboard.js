@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { listReservations } from "../utils/api";
 import { previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
+import axios from 'axios';
 
 /**
  * Defines the dashboard page.
@@ -18,11 +19,23 @@ function Dashboard({ curDate }) {
 
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  //const [tables, setTables] = useState([]);
+  const [tables, setTables] = useState([]);
   const [date, setDate] = useState(x);
   const history = useHistory();
   
   useEffect(loadDashboard, [date]);
+  useEffect(() => {
+    axios.get(`http://localhost:5000/tables`)
+    .then(res => {
+      //console.log(res);
+      const sortedTables = res.data.data.sort((a, b) => {
+        if (a.table_name >= b.table_name) return 1;
+        else return -1;
+      })
+      setTables(sortedTables);
+    })
+    .catch(err => console.log(err))
+  }, [])
 
   function loadDashboard() {
     //console.log(date);
@@ -64,25 +77,6 @@ function Dashboard({ curDate }) {
     
   }
 
-  let sampleTableData = [
-    { 
-      table_id: 1,
-      table_name: "qwer",
-      capacity: 4,
-      reservation_id: 9
-    },
-    {
-      table_id: 2,
-      table_name: "asdf",
-      capacity: 3
-    },
-    {
-      table_id: 3,
-      table_name: "zxcv",
-      capacity: 5
-    }
-  ]
-
   /*function switchDate(e, day) {
     if (day === "Previous") {
       let dateVals = date.split("-")
@@ -110,17 +104,17 @@ function Dashboard({ curDate }) {
       setDate(curDate)
     }
   }*/
-  let tables = (
+  let tablesDiv = (
     <div>
       <h4>Tables</h4>
-      {sampleTableData.map(tab => {
+      {tables.map(table => {
         return (
-          <div style={{backgroundColor: "ghostwhite"}}>
-            <p>Table Name: {tab.table_name}</p>
-            <p>Capacity: {tab.capacity}</p>
-            {tab.reservation_id ? 
-            <p data-table-id-status={tab.table_id}>Occupied</p>
-            : <p data-table-id-status={tab.table_id}>Free</p>}
+          <div style={{backgroundColor: "ghostwhite"}} key={table.table_id}>
+            <p>Table Name: {table.table_name}</p>
+            <p>Capacity: {table.capacity}</p>
+            {table.reservation_id ? 
+            <p data-table-id-status={table.table_id}>Occupied</p>
+            : <p data-table-id-status={table.table_id}>Free</p>}
           </div>
         )
       })}
@@ -138,6 +132,7 @@ function Dashboard({ curDate }) {
       {reservations ? reservations.map(res => {
         return (
           <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
+            <p>Reservation id: {res.reservation_id}</p>
             <p>First name: {res.first_name}</p>
             <p>Last name: {res.last_name}</p>
             <p>Phone: {res.mobile_number}</p>
@@ -154,7 +149,7 @@ function Dashboard({ curDate }) {
         <button onClick={() => alterQuery()}>Today</button>
         <button onClick={() => alterQuery("next")}>Next</button>
       </div>
-      {tables}
+      {tables ? tablesDiv : ""}
     </main>
   );
 }

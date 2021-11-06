@@ -130,7 +130,17 @@ async function create(req, res, next) {
   } catch (err) {
     next(err);
   }
-  
+}
+
+async function read(req, res, next) {
+  console.log(req.params.reservationId);
+  const { reservationId } = req.params;
+  try {
+    const data = await reservationsService.read(parseInt(reservationId));
+    res.json({ data })
+  } catch(err) {
+    next(err);
+  }
 }
 
 module.exports = {
@@ -139,5 +149,6 @@ module.exports = {
            hasRequiredProperties, 
            validateDateTimePeople, 
            validateTargetDate,
-           asyncErrorBoundary(create)]
+           asyncErrorBoundary(create)],
+  read: asyncErrorBoundary(read)
 };

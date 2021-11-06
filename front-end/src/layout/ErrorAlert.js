@@ -15,6 +15,10 @@ function ErrorAlert({ error }) {
         return <div className="alert alert-danger m-2">
           {error.map(err => <div key={Math.random()}>Error: {err.message}</div>)}
         </div>
+    } else if (error.message) {
+      return (
+        <div className="alert alert-danger m-2">Error: {error.message}</div>
+      )
     } else {
       //Server Validation
       return (
