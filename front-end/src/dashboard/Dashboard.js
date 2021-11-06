@@ -27,12 +27,7 @@ function Dashboard({ curDate }) {
   useEffect(() => {
     axios.get(`http://localhost:5000/tables`)
     .then(res => {
-      //console.log(res);
-      const sortedTables = res.data.data.sort((a, b) => {
-        if (a.table_name >= b.table_name) return 1;
-        else return -1;
-      })
-      setTables(sortedTables);
+      setTables(res.data.data);
     })
     .catch(err => console.log(err))
   }, [])
