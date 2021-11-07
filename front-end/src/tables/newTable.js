@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
 
 function NewTable(props) {
 
@@ -11,7 +12,7 @@ function NewTable(props) {
 
     const [formData, setFormData] = useState(formStructure);
     const history = useHistory();
-    const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
+    
 
     function updateForm(e, field) {
         if (field === "table_name") {

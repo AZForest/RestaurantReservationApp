@@ -5,6 +5,7 @@ import { listReservations } from "../utils/api";
 import { previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
 import axios from 'axios';
+const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
 
 /**
  * Defines the dashboard page.
@@ -20,17 +21,30 @@ function Dashboard({ curDate }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
+  const [tableFinishDivs, setTableFinishDivs] = useState({});
   const [date, setDate] = useState(x);
   const history = useHistory();
   
   useEffect(loadDashboard, [date]);
   useEffect(() => {
-    axios.get(`http://localhost:5000/tables`)
+    axios.get(`${BASE_URL}/tables`)
     .then(res => {
+      console.log(res.data.data);
       setTables(res.data.data);
     })
     .catch(err => console.log(err))
+
+    /*const hash = {}
+    tables.forEach(table => {
+      console.log(table.table_id);
+      hash[`${table.table_id}`] = false;
+    })
+    console.log(hash);
+    setTableFinishDivs(hash);*/
   }, [])
+
+
+
 
   function loadDashboard() {
     //console.log(date);
@@ -69,47 +83,50 @@ function Dashboard({ curDate }) {
       location.search = ``;
       setDate(curDate);
     }
-    
   }
 
-  /*function switchDate(e, day) {
-    if (day === "Previous") {
-      let dateVals = date.split("-")
-      //2011-12-01
-      console.log(dateVals);
-      if (dateVals[2] === "1") {
-        dateVals[1] = String(parseInt(dateVals[1]) - 1);
-        dateVals[2] = String(months[parseInt(dateVals[1])]);
-      } else {
-        dateVals[2] = String(parseInt(dateVals[2]) - 1);
-      }
-      dateVals = dateVals.join("-");
-      setDate(dateVals);
-    } else if (day === "Next") {
-      let dateVals = date.split("-")
-      if (dateVals[2] === "31" || (dateVals[2] === "30" && months[parseInt(dateVals[1])] === 30)) {
-        dateVals[1] = String(parseInt(dateVals[1]) + 1);
-        dateVals[2] = "1";
-      } else {
-        dateVals[2] = String(parseInt(dateVals[2]) + 1);
-      }
-      dateVals = dateVals.join("-");
-      setDate(dateVals);
-    } else {
-      setDate(curDate)
-    }
-  }*/
+  function clickFinish(table_id) {
+    console.log(table_id);
+    let newHash = { ...tableFinishDivs };
+    newHash[`${table_id}`] = !newHash[`${table_id}`];
+    console.log(newHash);
+    setTableFinishDivs(newHash);
+  }
+
+  function deleteHandler(table_id) {
+    axios.delete(`${BASE_URL}/tables/${table_id}/seat`)
+    .then(res => {
+      console.log(res);
+      let updatedTables = [ ...tables ];
+      let updateIndex = updatedTables.findIndex(table => table.table_id === table_id);
+      updatedTables[updateIndex].reservation_id = null;
+      setTables(updatedTables);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }
+
   let tablesDiv = (
     <div>
       <h4>Tables</h4>
       {tables.map(table => {
         return (
-          <div style={{backgroundColor: "ghostwhite"}} key={table.table_id}>
+          <div className="m-3" style={{backgroundColor: "lightblue"}} key={table.table_id}>
             <p>Table Name: {table.table_name}</p>
             <p>Capacity: {table.capacity}</p>
             {table.reservation_id ? 
             <p data-table-id-status={table.table_id}>Occupied</p>
             : <p data-table-id-status={table.table_id}>Free</p>}
+            {table.reservation_id ?
+            <button data-table-id-status={table.table_id} onClick={() => clickFinish(table.table_id)}>Finish</button>
+            : ""}
+            {tableFinishDivs[`${table.table_id}`] ?
+            <div>
+              <button onClick={() => deleteHandler(table.table_id)}>Ok</button>
+              <button onClick={() => clickFinish(table.table_id)}>Cancel</button>
+            </div>
+            : ""}
           </div>
         )
       })}

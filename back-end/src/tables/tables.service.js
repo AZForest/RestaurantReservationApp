@@ -31,6 +31,15 @@ function update(tableId, reservation_id ) {
            })
 }
 
+function unseat(tableId) {
+    return knex("tables")
+           .where({ table_id: tableId })
+           .update({ reservation_id: null }, "*")
+           .then(uR => {
+               return uR[0];
+           })
+}
+
 function getReservation(reservationId) {
     return knex("reservations")
            .select("*")
@@ -43,5 +52,6 @@ module.exports = {
     read,
     create,
     update,
+    unseat,
     getReservation
 }

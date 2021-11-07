@@ -109,11 +109,23 @@ async function update(req, res, next) {
         console.log(err);
         next(err);
     }
-    //res.send("hi")
+}
+
+async function destroy(req, res, next) {
+    const { tableId } = req.params;
+    try {
+        const data = await tablesService.unseat(tableId);
+        console.log(data);
+        res.status(204).json({ data })
+    } catch (err) {
+        next(err);
+    }
 }
 
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [postPropValidator, asyncErrorBoundary(create)],
-    update: [updatePropValidator, validateReservation, checkTableCapacity, asyncErrorBoundary(update)]
+    update: [updatePropValidator, validateReservation, checkTableCapacity, asyncErrorBoundary(update)],
+    delete: asyncErrorBoundary(destroy)
+
 }
