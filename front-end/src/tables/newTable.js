@@ -32,7 +32,8 @@ function NewTable(props) {
     function submitHandler(e) {
         e.preventDefault();
         if (formData.capacity !== null) {
-            axios.post(`${BASE_URL}/tables`, { data: formData })
+            
+            axios.post(`${BASE_URL}/tables`, { data: { "table_name": formData["table_name"], "capacity": parseInt(formData["capacity"]) }})
             .then((res) => {
                 history.push("/dashboard");
             })
