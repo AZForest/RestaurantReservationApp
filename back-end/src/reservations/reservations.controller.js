@@ -124,6 +124,7 @@ async function list(req, res, next) {
 }
 
 async function create(req, res, next) {
+  res.locals.data.reservation_status = 'booked';
   try {
     const data = await reservationsService.create(res.locals.data);
     res.status(201).json({ data });

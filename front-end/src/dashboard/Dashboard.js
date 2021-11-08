@@ -123,12 +123,15 @@ function Dashboard({ curDate }) {
         return (
           <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
             <p>Reservation id: {res.reservation_id}</p>
+            <p>Reservation status: {res.reservation_status[0].toUpperCase() + res.reservation_status.slice(1)}</p>
             <p>First name: {res.first_name}</p>
             <p>Last name: {res.last_name}</p>
             <p>Phone: {res.mobile_number}</p>
             <p>Time: {res.reservation_time}</p>
             <p>People: {res.people}</p>
+            {res.reservation_status === "booked" ? 
             <Link to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
+            : ""}
             <br/>
           </div>
         )

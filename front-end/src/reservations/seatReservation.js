@@ -19,7 +19,6 @@ function SeatReservation() {
             const avTables = res.data.data.filter(table => {
                 return table.reservation_id === null;
             })
-            //console.log(avTables);
             setTables(avTables);
             if (tables.length > 1) setSelectedValue(tables[0]);
         })

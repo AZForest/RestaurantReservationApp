@@ -14,7 +14,7 @@ function NewReservation(props) {
         mobile_number: "",
         reservation_date: "",
         reservation_time: "",
-        people: 1
+        people: 1,
     }
 
     const [formData, setFormData] = useState(formStructure);
