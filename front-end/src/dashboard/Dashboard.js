@@ -21,30 +21,20 @@ function Dashboard({ curDate }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
-  const [tableFinishDivs, setTableFinishDivs] = useState({});
   const [date, setDate] = useState(x);
   const history = useHistory();
   
   useEffect(loadDashboard, [date]);
-  useEffect(() => {
+  useEffect(loadTables, []);
+
+
+  function loadTables() {
     axios.get(`${BASE_URL}/tables`)
     .then(res => {
-      console.log(res.data.data);
       setTables(res.data.data);
     })
     .catch(err => console.log(err))
-
-    /*const hash = {}
-    tables.forEach(table => {
-      console.log(table.table_id);
-      hash[`${table.table_id}`] = false;
-    })
-    console.log(hash);
-    setTableFinishDivs(hash);*/
-  }, [])
-
-
-
+  }
 
   function loadDashboard() {
     //console.log(date);
@@ -86,21 +76,15 @@ function Dashboard({ curDate }) {
   }
 
   function clickFinish(table_id) {
-    console.log(table_id);
-    let newHash = { ...tableFinishDivs };
-    newHash[`${table_id}`] = !newHash[`${table_id}`];
-    console.log(newHash);
-    setTableFinishDivs(newHash);
+    if (window.confirm("Is this table ready to seat new guests?")) {
+      deleteHandler(table_id);
+    }
   }
 
   function deleteHandler(table_id) {
     axios.delete(`${BASE_URL}/tables/${table_id}/seat`)
     .then(res => {
-      console.log(res);
-      let updatedTables = [ ...tables ];
-      let updateIndex = updatedTables.findIndex(table => table.table_id === table_id);
-      updatedTables[updateIndex].reservation_id = null;
-      setTables(updatedTables);
+      loadTables();
     })
     .catch(err => {
       console.log(err);
@@ -119,13 +103,7 @@ function Dashboard({ curDate }) {
             <p data-table-id-status={table.table_id}>Occupied</p>
             : <p data-table-id-status={table.table_id}>Free</p>}
             {table.reservation_id ?
-            <button data-table-id-status={table.table_id} onClick={() => clickFinish(table.table_id)}>Finish</button>
-            : ""}
-            {tableFinishDivs[`${table.table_id}`] ?
-            <div>
-              <button onClick={() => deleteHandler(table.table_id)}>Ok</button>
-              <button onClick={() => clickFinish(table.table_id)}>Cancel</button>
-            </div>
+            <button data-table-id-finish={table.table_id} onClick={() => clickFinish(table.table_id)}>Finish</button>
             : ""}
           </div>
         )
