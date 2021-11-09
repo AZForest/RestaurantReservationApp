@@ -144,6 +144,19 @@ async function read(req, res, next) {
   }
 }
 
+async function update(req, res, next) {
+  const { reservationId } = req.params;
+  const { status } = req.body.data;
+  console.log(reservationId);
+  console.log(status);
+  try {
+    const data = await reservationsService.updateStatus(parseInt(reservationId), status);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   list,
   create: [hasOnlyValidProperties, 
@@ -151,5 +164,6 @@ module.exports = {
            validateDateTimePeople, 
            validateTargetDate,
            asyncErrorBoundary(create)],
-  read: asyncErrorBoundary(read)
+  read: asyncErrorBoundary(read),
+  update: asyncErrorBoundary(update)
 };

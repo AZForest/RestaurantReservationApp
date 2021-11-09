@@ -49,10 +49,13 @@ function SeatReservation() {
         if (validateSize()) {
             axios.put(`${BASE_URL}/tables/${selectedValue.table_id}/seat/`, { data: { reservation_id: reservation.reservation_id } })
             .then(res => {
-                //console.log(res);
-                history.push("/");
-                /*const filteredTables = tables.filter(table => table.table_id !== selectedValue.table_id);
-                setTables(filteredTables);*/
+                axios.put(`${BASE_URL}/reservations/${reservation.reservation_id}/status`, { data: { status: "seated" }})
+                .then(res => {
+                    history.push("/")
+                })
+                .catch(err => {
+                    console.log(err);
+                })
             })
             .catch(err => console.log(err));
         } else {

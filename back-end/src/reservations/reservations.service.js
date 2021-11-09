@@ -29,9 +29,23 @@ function read(reservation_id) {
          .first();
 }
 
+function updateStatus(reservationId, status) {
+  console.log("hi")
+  return knex("reservations")
+         .where({ reservation_id: reservationId })
+         .update({ reservation_status: status }, "*")
+         .then(uR => {
+           console.log(uR[0]);
+           return uR[0];
+         })
+
+
+}
+
 module.exports = {
     list,
     listByDate,
     create,
-    read
+    read,
+    updateStatus
 }

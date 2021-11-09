@@ -24,7 +24,7 @@ function Dashboard({ curDate }) {
   const [date, setDate] = useState(x);
   const history = useHistory();
   
-  useEffect(loadDashboard, [date]);
+  useEffect(loadDashboard, [date, tables]);
   useEffect(loadTables, []);
 
 
@@ -75,16 +75,23 @@ function Dashboard({ curDate }) {
     }
   }
 
-  function clickFinish(table_id) {
+  function clickFinish(table) {
     if (window.confirm("Is this table ready to seat new guests?")) {
-      deleteHandler(table_id);
+      deleteHandler(table);
     }
   }
 
-  function deleteHandler(table_id) {
-    axios.delete(`${BASE_URL}/tables/${table_id}/seat`)
+  function deleteHandler(table) {
+    axios.delete(`${BASE_URL}/tables/${table.table_id}/seat`)
     .then(res => {
-      loadTables();
+      axios.put(`${BASE_URL}/reservations/${table.reservation_id}/status`, { data: { status: "finished" } })
+      .then(res => {
+        loadTables();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      
     })
     .catch(err => {
       console.log(err);
@@ -103,7 +110,7 @@ function Dashboard({ curDate }) {
             <p data-table-id-status={table.table_id}>Occupied</p>
             : <p data-table-id-status={table.table_id}>Free</p>}
             {table.reservation_id ?
-            <button data-table-id-finish={table.table_id} onClick={() => clickFinish(table.table_id)}>Finish</button>
+            <button data-table-id-finish={table.table_id} onClick={() => clickFinish(table)}>Finish</button>
             : ""}
           </div>
         )
@@ -121,19 +128,22 @@ function Dashboard({ curDate }) {
       {/*JSON.stringify(reservations)*/}
       {reservations ? reservations.map(res => {
         return (
-          <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
-            <p>Reservation id: {res.reservation_id}</p>
-            <p>Reservation status: {res.reservation_status[0].toUpperCase() + res.reservation_status.slice(1)}</p>
-            <p>First name: {res.first_name}</p>
-            <p>Last name: {res.last_name}</p>
-            <p>Phone: {res.mobile_number}</p>
-            <p>Time: {res.reservation_time}</p>
-            <p>People: {res.people}</p>
-            {res.reservation_status === "booked" ? 
-            <Link to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
-            : ""}
-            <br/>
-          </div>
+          <>
+            {res.reservation_status !== "finished" ?
+            <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
+              <p>Reservation id: {res.reservation_id}</p>
+              <p>Reservation status: {res.reservation_status[0].toUpperCase() + res.reservation_status.slice(1)}</p>
+              <p>First name: {res.first_name}</p>
+              <p>Last name: {res.last_name}</p>
+              <p>Phone: {res.mobile_number}</p>
+              <p>Time: {res.reservation_time}</p>
+              <p>People: {res.people}</p>
+              {res.reservation_status === "booked" ? 
+              <Link to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
+              : ""}
+              <br/>
+            </div> : ""}
+          </>
         )
       }) : ""}
       <div className="m-3">
