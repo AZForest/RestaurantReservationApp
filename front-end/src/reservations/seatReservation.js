@@ -62,7 +62,21 @@ function SeatReservation() {
             const error = new Error("Party size cannot exceed table capacity");
             setError(error);
         }
+    }
 
+    async function asyncSubmit(e) {
+        e.preventDefault();
+        if (validateSize()) {
+            try {
+                const [res1, res2] = await Promise.all([
+                    axios.put(`${BASE_URL}/tables/${selectedValue.table_id}/seat/`, { data: { reservation_id: reservation.reservation_id } }),
+                    axios.put(`${BASE_URL}/reservations/${reservation.reservation_id}/status`, { data: { status: "seated" }})
+                ])
+                history.push("/")
+            } catch(err) {
+                console.log(err);
+            }
+        }
     }
 
     return (
@@ -70,7 +84,7 @@ function SeatReservation() {
             <h4>Seat reservation for: Reservation {reservationId}</h4>
             <h4>Select Table: </h4>
             <ErrorAlert error={error}/>
-            <form onSubmit={(e) => submitHandler(e)}>
+            <form onSubmit={(e) => asyncSubmit(e)}>
                 <select name="table_id" className="m-3" onChange={(e) => changeSelect(e)}>
                     {tables.map(table => {
                             return (

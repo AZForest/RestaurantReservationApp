@@ -77,7 +77,7 @@ function Dashboard({ curDate }) {
 
   function clickFinish(table) {
     if (window.confirm("Is this table ready to seat new guests?")) {
-      deleteHandler(table);
+      asyncDelete(table);
     }
   }
 
@@ -96,6 +96,18 @@ function Dashboard({ curDate }) {
     .catch(err => {
       console.log(err);
     })
+  }
+
+  async function asyncDelete(table) {
+    try {
+      const [res1, res2] = await Promise.all([
+        axios.delete(`${BASE_URL}/tables/${table.table_id}/seat`),
+        axios.put(`${BASE_URL}/reservations/${table.reservation_id}/status`, { data: { status: "finished" } })
+      ])
+      loadTables();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   let tablesDiv = (
@@ -118,6 +130,7 @@ function Dashboard({ curDate }) {
     </div>
   )
 
+  //res.reservation_status[0].toUpperCase() + res.reservation_status.slice(1)
   return (
     <main>
       <h1>Dashboard</h1>
@@ -132,7 +145,7 @@ function Dashboard({ curDate }) {
             {res.reservation_status !== "finished" ?
             <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
               <p>Reservation id: {res.reservation_id}</p>
-              <p>Reservation status: {res.reservation_status[0].toUpperCase() + res.reservation_status.slice(1)}</p>
+              <p data-reservation-id-status={res.reservation_id}>Reservation status: {res.reservation_status}</p>
               <p>First name: {res.first_name}</p>
               <p>Last name: {res.last_name}</p>
               <p>Phone: {res.mobile_number}</p>

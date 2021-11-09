@@ -134,7 +134,7 @@ async function create(req, res, next) {
 }
 
 async function read(req, res, next) {
-  console.log(req.params.reservationId);
+  //console.log(req.params.reservationId);
   const { reservationId } = req.params;
   try {
     const data = await reservationsService.read(parseInt(reservationId));
@@ -147,11 +147,10 @@ async function read(req, res, next) {
 async function update(req, res, next) {
   const { reservationId } = req.params;
   const { status } = req.body.data;
-  console.log(reservationId);
-  console.log(status);
   try {
     const data = await reservationsService.updateStatus(parseInt(reservationId), status);
-    res.sendStatus(204);
+    console.log("DR is: " + data.reservation_status);
+    res.json({ data: data.reservation_status});
   } catch (err) {
     next(err);
   }

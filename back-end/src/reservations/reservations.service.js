@@ -30,7 +30,6 @@ function read(reservation_id) {
 }
 
 function updateStatus(reservationId, status) {
-  console.log("hi")
   return knex("reservations")
          .where({ reservation_id: reservationId })
          .update({ reservation_status: status }, "*")
