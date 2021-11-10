@@ -10,7 +10,8 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
   "mobile_number",
   "reservation_date",
   "reservation_time",
-  "people"
+  "people",
+  "status"
 ]
 
 const hasOnlyValidProperties = (req, res, next) => {
@@ -41,6 +42,22 @@ const hasRequiredProperties = (req, res, next) => {
   } catch (err) {
       next(err);
   }
+}
+
+const validateStatusProp = (req, res, next) => {
+  if (res.locals.data.status === "seated") {
+    next({
+      status: 400,
+      message: "reservation_status cannot be 'seated'"
+    })
+  }
+  if (res.locals.data.status === "finished") {
+    next({
+      status: 400,
+      message: "reservation_status cannot be 'finished'"
+    })
+  }
+  next();
 }
 
 //US-01
@@ -98,6 +115,34 @@ const validateTargetDate = (req, res, next) => {
   next();
 }
 
+async function validateUpdate(req, res, next) {
+  const { reservationId } = req.params;
+  const { status } = req.body.data;
+  const data = await reservationsService.read(parseInt(reservationId));
+  //console.log(data);
+  if (!data) {
+    next({
+      status: 404,
+      message: `reservation_id ${reservationId} does not exist`
+    })
+  }
+  if (data.status === "finished") {
+    next({
+      status: 400,
+      message: "'finished' status cannot be updated"
+    })
+  }
+  if (status === "unknown") {
+    next({
+      status: 400,
+      message: "Reservation status 'unknown'"
+    })
+  }
+  res.locals.reservation = data;
+  res.locals.newStatus = status;
+  next();
+}
+
 
 async function list(req, res, next) {
   try { 
@@ -105,7 +150,8 @@ async function list(req, res, next) {
     const date = req.query.date;
     const data = await reservationsService.listByDate(date);
     if (data.length > 1) {
-      const sortedByTime = data.sort((a,b) => {
+      const filteredDates = data.filter(res => res.status !== "finished");
+      const sortedByTime = filteredDates.sort((a,b) => {
         const aTime = a.reservation_time.split(":");
         const aSeconds = (parseInt(aTime[0]) * 60 * 60) + (parseInt(aTime[1]) * 60);
         const bTime = b.reservation_time.split(":");
@@ -124,7 +170,7 @@ async function list(req, res, next) {
 }
 
 async function create(req, res, next) {
-  res.locals.data.reservation_status = 'booked';
+  //res.locals.data.reservation_status = 'booked';
   try {
     const data = await reservationsService.create(res.locals.data);
     res.status(201).json({ data });
@@ -145,12 +191,11 @@ async function read(req, res, next) {
 }
 
 async function update(req, res, next) {
-  const { reservationId } = req.params;
-  const { status } = req.body.data;
+  let reservationId = res.locals.reservation.reservation_id;
+  let status = res.locals.newStatus;
   try {
-    const data = await reservationsService.updateStatus(parseInt(reservationId), status);
-    console.log("DR is: " + data.reservation_status);
-    res.json({ data: data.reservation_status});
+    const data = await reservationsService.updateStatus(reservationId, status);
+    res.json({ data: { status }});
   } catch (err) {
     next(err);
   }
@@ -159,10 +204,11 @@ async function update(req, res, next) {
 module.exports = {
   list,
   create: [hasOnlyValidProperties, 
-           hasRequiredProperties, 
+           hasRequiredProperties,
+           validateStatusProp, 
            validateDateTimePeople, 
            validateTargetDate,
            asyncErrorBoundary(create)],
   read: asyncErrorBoundary(read),
-  update: asyncErrorBoundary(update)
+  update: [asyncErrorBoundary(validateUpdate), asyncErrorBoundary(update)]
 };

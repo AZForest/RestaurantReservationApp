@@ -32,7 +32,7 @@ function read(reservation_id) {
 function updateStatus(reservationId, status) {
   return knex("reservations")
          .where({ reservation_id: reservationId })
-         .update({ reservation_status: status }, "*")
+         .update({ status: status }, "*")
          .then(uR => {
            console.log(uR[0]);
            return uR[0];
