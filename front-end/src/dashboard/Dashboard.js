@@ -154,6 +154,7 @@ function Dashboard({ curDate }) {
               {res.reservation_status === "booked" ? 
               <Link to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
               : ""}
+              <Link to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
               <br/>
             </div> : ""}
           </div>

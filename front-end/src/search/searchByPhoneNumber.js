@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { listReservations } from '../utils/api';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
+
 
 function SearchByPhoneNumber() {
 
@@ -11,10 +15,8 @@ function SearchByPhoneNumber() {
         setMobileNumber(e.target.value);
     }
 
-    const findReservations = (e) => {
-        e.preventDefault();
+    function findR() {
         const abortController = new AbortController();
-        setReservationsNotFound(false);
         let mobile_number = mobileNumber;
         listReservations({ mobile_number }, abortController.signal)
             .then((res) => {
@@ -28,17 +30,53 @@ function SearchByPhoneNumber() {
         return () => abortController.abort();
     }
 
+    const findReservations = (e) => {
+        e.preventDefault();
+        findR();
+        /*const abortController = new AbortController();
+        setReservationsNotFound(false);
+        let mobile_number = mobileNumber;
+        listReservations({ mobile_number }, abortController.signal)
+            .then((res) => {
+                if (res.length > 0) {
+                    setReservations(res);
+                } else {
+                    setReservationsNotFound(true);
+                }
+            })
+            .catch(err => console.log(err));
+        return () => abortController.abort();*/
+    }
+
+    const cancelHandler = (reservationId) => {
+        if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
+            axios.put(`${BASE_URL}/reservations/${reservationId}/status`, { data: { status: "cancelled" } })
+            .then(res => {
+                findR();
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+    }
+
     let reservationsDiv = (
         <div>
             {reservations.map(reservation => {
                 return (
-                    <ul key={reservation.reservation_id}>
-                        <li>{reservation.first_name}</li>
-                        <li>{reservation.last_name}</li>
-                        <li>{reservation.mobile_number}</li>
-                        <li>{reservation.status}</li>
-                        <li>{reservation.people}</li>
-                    </ul>
+                    <div style={{backgroundColor: "pink", display: "flex"}}>
+                        <ul key={reservation.reservation_id}>
+                            <li>{reservation.first_name}</li>
+                            <li>{reservation.last_name}</li>
+                            <li>{reservation.mobile_number}</li>
+                            <li>{reservation.status}</li>
+                            <li>{reservation.people}</li>
+                        </ul>
+                        <div>
+                            <Link to={`/reservations/${reservation.reservation_id}/edit`}>Edit</Link>
+                            <button onClick={() => cancelHandler(reservation.reservation_id)}>Cancel</button>
+                        </div>
+                    </div>
                 )
             })}
         </div>
