@@ -34,7 +34,6 @@ function updateStatus(reservationId, status) {
          .where({ reservation_id: reservationId })
          .update({ status: status }, "*")
          .then(uR => {
-           console.log(uR[0]);
            return uR[0];
          })
 

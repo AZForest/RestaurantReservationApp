@@ -15,6 +15,7 @@ function NewReservation(props) {
         reservation_date: "",
         reservation_time: "",
         people: 1,
+        status: "booked"
     }
 
     const [formData, setFormData] = useState(formStructure);
@@ -101,6 +102,9 @@ function NewReservation(props) {
         e.preventDefault(); 
         const date = formData.reservation_date;
         if (validateInput()) {
+            let newFormData = { ...formData };
+            newFormData.status = 'booked';
+            console.log(newFormData);
             axios.post(`${BASE_URL}/reservations`, { data: formData } )
             .then(res => {
                 history.push({

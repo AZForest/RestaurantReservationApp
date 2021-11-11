@@ -145,7 +145,7 @@ function Dashboard({ curDate }) {
             {res.reservation_status !== "finished" ?
             <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
               <p>Reservation id: {res.reservation_id}</p>
-              <p data-reservation-id-status={res.reservation_id}>Reservation status: {res.reservation_status}</p>
+              <p data-reservation-id-status={res.reservation_id}>Reservation status: {res.status}</p>
               <p>First name: {res.first_name}</p>
               <p>Last name: {res.last_name}</p>
               <p>Phone: {res.mobile_number}</p>

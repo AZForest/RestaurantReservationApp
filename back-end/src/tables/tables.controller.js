@@ -1,4 +1,5 @@
 const tablesService = require("./tables.service");
+const reservationsService = require("../reservations/reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 const postPropValidator = (req, res, next) => {
@@ -51,6 +52,12 @@ async function validateReservation(req, res, next) {
             message: `Reservation ${res.locals.reservation_id} does not exist`
         })
     }
+    if (reservation.status === "seated") {
+        next({
+            status: 400,
+            message: `Reservation is already seated`
+        })
+    }
     res.locals.reservation = reservation;
     next();
 }
@@ -89,6 +96,7 @@ async function checkIfTableOccupied(req, res, next) {
         })
     }
     res.locals.table_id = tableId;
+    res.locals.reservation_id = table.reservation_id;
     next();
 }
 
@@ -122,17 +130,29 @@ async function update(req, res, next) {
     try {
         const data = await tablesService.update(table_id, reservation_id);
         //console.log(data);
-        res.status(200).json({ data: data });
+        //res.status(200).json({ data: data });
     } catch (err) {
         console.log(err);
         next(err);
+    }
+    try {
+        const result = await reservationsService.updateStatus(reservation_id, "seated");
+        res.json({ data: result });
+    } catch (err) {
+        console.log(err);
     }
 }
 
 async function destroy(req, res, next) {
     try {
         const data = await tablesService.unseat(res.locals.table_id);
-        res.status(200).json({ data })
+        //res.status(200).json({ data })
+    } catch (err) {
+        next(err);
+    }
+    try {
+        const result = await reservationsService.updateStatus(res.locals.reservation_id, "finished");
+        res.json({ data: result })
     } catch (err) {
         next(err);
     }
@@ -141,7 +161,10 @@ async function destroy(req, res, next) {
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [postPropValidator, asyncErrorBoundary(create)],
-    update: [updatePropValidator, asyncErrorBoundary(validateReservation), asyncErrorBoundary(checkTableCapacity), asyncErrorBoundary(update)],
+    update: [updatePropValidator, 
+            asyncErrorBoundary(validateReservation), 
+            asyncErrorBoundary(checkTableCapacity), 
+            asyncErrorBoundary(update)],
     delete: [asyncErrorBoundary(checkIfTableOccupied), asyncErrorBoundary(destroy)]
 
 }

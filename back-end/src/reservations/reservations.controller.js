@@ -14,8 +14,10 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
   "status"
 ]
 
+
 const hasOnlyValidProperties = (req, res, next) => {
   const { data = {} } = req.body;
+  if (!data.status) data.status = "booked";
   const invalidFields = Object.keys(data).filter(entry => {
     return !VALID_PROPERTIES.includes(entry);
   })
@@ -33,7 +35,7 @@ const hasRequiredProperties = (req, res, next) => {
   try {
       VALID_PROPERTIES.forEach(prop => {
         if (!res.locals.data[prop]) {
-          const error = new Error(`A ${prop} property is required.`);
+          const error = new Error(`A ${prop} property is required.wecdedwc`);
           error.status = 400;
           throw error;
         }
@@ -150,7 +152,9 @@ async function list(req, res, next) {
     const date = req.query.date;
     const data = await reservationsService.listByDate(date);
     if (data.length > 1) {
-      const filteredDates = data.filter(res => res.status !== "finished");
+      const filteredDates = data.filter(res => {
+        return res.status !== "finished"
+      });
       const sortedByTime = filteredDates.sort((a,b) => {
         const aTime = a.reservation_time.split(":");
         const aSeconds = (parseInt(aTime[0]) * 60 * 60) + (parseInt(aTime[1]) * 60);
