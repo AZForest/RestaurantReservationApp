@@ -147,29 +147,43 @@ async function validateUpdate(req, res, next) {
 
 
 async function list(req, res, next) {
-  try { 
-    //const date = "2021-10-30"
-    const date = req.query.date;
-    const data = await reservationsService.listByDate(date);
-    if (data.length > 1) {
-      const filteredDates = data.filter(res => {
-        return res.status !== "finished"
-      });
-      const sortedByTime = filteredDates.sort((a,b) => {
-        const aTime = a.reservation_time.split(":");
-        const aSeconds = (parseInt(aTime[0]) * 60 * 60) + (parseInt(aTime[1]) * 60);
-        const bTime = b.reservation_time.split(":");
-        const bSeconds = (parseInt(bTime[0]) * 60 * 60) + (parseInt(bTime[1]) * 60);
-        return aSeconds - bSeconds;
-      })
-      res.json({ data: sortedByTime })
-    } else {
-      res.json({ data })
+  if (req.query.date) {
+    //date case
+    try { 
+      const date = req.query.date;
+      const data = await reservationsService.listByDate(date);
+      if (data.length > 1) {
+        const filteredDates = data.filter(res => {
+          return res.status !== "finished"
+        });
+        const sortedByTime = filteredDates.sort((a,b) => {
+          const aTime = a.reservation_time.split(":");
+          const aSeconds = (parseInt(aTime[0]) * 60 * 60) + (parseInt(aTime[1]) * 60);
+          const bTime = b.reservation_time.split(":");
+          const bSeconds = (parseInt(bTime[0]) * 60 * 60) + (parseInt(bTime[1]) * 60);
+          return aSeconds - bSeconds;
+        })
+        res.json({ data: sortedByTime })
+      } else {
+        res.json({ data })
+      }
+    } catch(err) {
+      next(err);
+    }
+  } else {
+    //mobile_number case
+    try {
+      const mobile_number = req.query.mobile_number;
+      const data = await reservationsService.search(mobile_number);
+      if (data.length > 1) {
+        res.json({ data: data })
+      } else {
+        res.json({ data })
+      }
+    } catch (err) {
+      console.log(err);
     }
     
-    
-  } catch(err) {
-    next(err);
   }
 }
 

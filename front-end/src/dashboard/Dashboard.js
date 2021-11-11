@@ -141,7 +141,7 @@ function Dashboard({ curDate }) {
       {/*JSON.stringify(reservations)*/}
       {reservations ? reservations.map(res => {
         return (
-          <>
+          <div key={res.reservation_id}>
             {res.reservation_status !== "finished" ?
             <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
               <p>Reservation id: {res.reservation_id}</p>
@@ -156,7 +156,7 @@ function Dashboard({ curDate }) {
               : ""}
               <br/>
             </div> : ""}
-          </>
+          </div>
         )
       }) : ""}
       <div className="m-3">
