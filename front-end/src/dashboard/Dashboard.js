@@ -110,6 +110,18 @@ function Dashboard({ curDate }) {
     }
   }
 
+  const cancelHandler = (reservationId) => {
+    if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
+        axios.put(`${BASE_URL}/reservations/${reservationId}/status`, { data: { status: "cancelled" } })
+        .then(res => {
+            loadDashboard();
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+  }
+
   let tablesDiv = (
     <div>
       <h4>Tables</h4>
@@ -155,6 +167,7 @@ function Dashboard({ curDate }) {
               <Link to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
               : ""}
               <Link to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
+              <button onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
               <br/>
             </div> : ""}
           </div>

@@ -2,7 +2,7 @@ import React from "react";
 
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
-import NewReservation from "../reservations/newReservation";
+import NewReservation from "../reservations/NewReservation";
 import NewTable from "../tables/newTable";
 import SeatReservation from "../reservations/seatReservation";
 import EditReservation from "../reservations/EditReservation";

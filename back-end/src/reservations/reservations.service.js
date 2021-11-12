@@ -50,8 +50,18 @@ function updateStatus(reservationId, status) {
          .then(uR => {
            return uR[0];
          })
+}
 
-
+function updateReservation(updatedReservation) {
+  console.log(updatedReservation)
+  return knex("reservations")
+         .select("*")
+         .where({ reservation_id: updatedReservation.reservation_id })
+         .update(updatedReservation, "*")
+         .then(uR => {
+           console.log(uR[0]);
+           return uR[0];
+         })
 }
 
 module.exports = {
@@ -61,5 +71,6 @@ module.exports = {
     search,
     create,
     read,
-    updateStatus
+    updateStatus,
+    updateReservation
 }

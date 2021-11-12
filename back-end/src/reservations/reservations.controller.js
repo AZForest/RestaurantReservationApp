@@ -90,7 +90,9 @@ const validateDateTimePeople = (req, res, next) => {
 //US-02
 const validateTargetDate = (req, res, next) => {
   const { reservation_date: date, reservation_time: time } = res.locals.data;
-  const targetDate = new Date(date);
+  const dateArr = date.split("-");
+  const timeArr = time.split(":");
+  const targetDate = new Date(dateArr[0], dateArr[1], dateArr[2], timeArr[0], timeArr[1], 0);
   if (targetDate.getDay() === 1) {
     next({
       message: "Restaurant is closed on Tuesdays.",
@@ -181,7 +183,7 @@ async function list(req, res, next) {
         res.json({ data })
       }
     } catch (err) {
-      console.log(err);
+      next(err);
     }
     
   }
@@ -219,6 +221,16 @@ async function update(req, res, next) {
   }
 }
 
+async function updateReservation(req, res, next) {
+  //console.log(req.body.data);
+  try {
+    const data = await reservationsService.updateReservation(req.body.data);
+    res.json({ data: { data }})
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   list,
   create: [hasOnlyValidProperties, 
@@ -228,5 +240,6 @@ module.exports = {
            validateTargetDate,
            asyncErrorBoundary(create)],
   read: asyncErrorBoundary(read),
-  update: [asyncErrorBoundary(validateUpdate), asyncErrorBoundary(update)]
+  update: [asyncErrorBoundary(validateUpdate), asyncErrorBoundary(update)],
+  updateReservation: asyncErrorBoundary(updateReservation)
 };
