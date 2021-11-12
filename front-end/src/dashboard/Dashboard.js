@@ -44,8 +44,8 @@ function Dashboard({ curDate }) {
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
       .then((res) => {
-        //console.log(res)
-        setReservations(res)
+        const filteredReservations = res.filter(resev => resev.status !== "cancelled")
+        setReservations(filteredReservations)
       })
       .catch(setReservationsError);
     return () => abortController.abort();
@@ -81,7 +81,7 @@ function Dashboard({ curDate }) {
     }
   }
 
-  function deleteHandler(table) {
+  /*function deleteHandler(table) {
     axios.delete(`${BASE_URL}/tables/${table.table_id}/seat`)
     .then(res => {
       axios.put(`${BASE_URL}/reservations/${table.reservation_id}/status`, { data: { status: "finished" } })
@@ -96,7 +96,7 @@ function Dashboard({ curDate }) {
     .catch(err => {
       console.log(err);
     })
-  }
+  }*/
 
   async function asyncDelete(table) {
     try {
@@ -163,11 +163,11 @@ function Dashboard({ curDate }) {
               <p>Phone: {res.mobile_number}</p>
               <p>Time: {res.reservation_time}</p>
               <p>People: {res.people}</p>
-              {res.reservation_status === "booked" ? 
+              {res.status === "booked" ? 
               <Link to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
               : ""}
               <Link to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
-              <button onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
+              <button data-reservation-id-cancel={res.reservation_id} onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
               <br/>
             </div> : ""}
           </div>

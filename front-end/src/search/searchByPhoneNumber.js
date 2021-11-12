@@ -74,7 +74,7 @@ function SearchByPhoneNumber() {
                         </ul>
                         <div>
                             <Link to={`/reservations/${reservation.reservation_id}/edit`}>Edit</Link>
-                            <button onClick={() => cancelHandler(reservation.reservation_id)}>Cancel</button>
+                            <button data-reservation-id-cancel={reservation.reservation_id} onClick={() => cancelHandler(reservation.reservation_id)}>Cancel</button>
                         </div>
                     </div>
                 )

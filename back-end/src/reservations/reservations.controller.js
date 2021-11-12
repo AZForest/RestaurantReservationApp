@@ -96,7 +96,8 @@ const validateTargetDate = (req, res, next) => {
   const dateArr = date.split("-");
   const timeArr = time.split(":");
   const targetDate = new Date(dateArr[0], dateArr[1], dateArr[2], timeArr[0], timeArr[1], 0);
-  if (targetDate.getDay() === 1) {
+  const targetDay = new Date(date);
+  if (targetDay.getDay() === 1) {
     next({
       message: "Restaurant is closed on Tuesdays.",
       status: 400
@@ -157,7 +158,7 @@ async function reservationExists(req, res, next) {
     if (!data) {
       next({
         status: 404,
-        message: 'Reservation does not exist'
+        message: `Reservation ${reservationId} does not exist`
       })
     }
   } catch (err) {
@@ -257,7 +258,7 @@ module.exports = {
            validateDateTimePeople, 
            validateTargetDate,
            asyncErrorBoundary(create)],
-  read: asyncErrorBoundary(read),
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
   update: [asyncErrorBoundary(validateUpdate), asyncErrorBoundary(update)],
   updateReservation: [asyncErrorBoundary(reservationExists), 
                       hasOnlyValidProperties,

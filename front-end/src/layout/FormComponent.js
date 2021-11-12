@@ -82,11 +82,15 @@ function FormComponent({ reservation }) {
         const time = formData.reservation_time;
         const dateArr = date.split("-");
         const timeArr = time.split(":");
+        console.log(dateArr);
+        console.log(timeArr)
 
         const targetDate = new Date(dateArr[0], dateArr[1], dateArr[2], timeArr[0], timeArr[1], 0);
+        const targetDay = new Date(date);
         const errors = [];
         //Checks if Day is Tuesday
-        if (targetDate.getDay() === 1) {
+        console.log("Day is " + targetDay.getDay())
+        if (targetDay.getDay() === 1) {
             const dateError = new Error();
             dateError.message = "We are not open Tuesdays."
             errors.push(dateError);
@@ -95,6 +99,7 @@ function FormComponent({ reservation }) {
         if (Date.now() >= targetDate.getTime()) {
             const timeError = new Error("Reservations must be in the future.")
             errors.push(timeError);
+
         }
         //Checks if Res Time is between 10:30am - 9:30pm
         let timeArray = time.split(":");
@@ -138,7 +143,10 @@ function FormComponent({ reservation }) {
                 //Updates reservation
                 axios.put(`${BASE_URL}/reservations/${reservation.reservation_id}`, { data: formData })
                 .then(res => {
-                    history.goBack();
+                    history.push({
+                        pathname: `/dashboard`,
+                        search: `?date=${formData.reservation_date}`
+                    });
                 })
                 .catch(err => {
                     console.log(err);

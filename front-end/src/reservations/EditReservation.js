@@ -31,7 +31,7 @@ function EditReservation() {
             <h3>Edit Reservation</h3>
             {/*JSON.stringify(reservation)*/}
             {reservation ? <FormComponent reservation={reservation} /> : ""}
-            
+
         </div>
     )
 }

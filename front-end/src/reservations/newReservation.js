@@ -1,12 +1,12 @@
 import React from 'react';
-import { useState } from 'react';
+/*import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
+import axios from 'axios';*/
 import FormComponent from '../layout/FormComponent';
-const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
+//const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
 
 function NewReservation(props) {
-    const history = useHistory();
+    /*const history = useHistory();
 
     let formStructure = {
         first_name: "",
@@ -119,7 +119,7 @@ function NewReservation(props) {
                 setError(err)
             });
         }
-    }
+    }*/
 
     return (
         <div>
