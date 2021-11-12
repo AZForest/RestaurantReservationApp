@@ -21,10 +21,13 @@ const hasOnlyValidProperties = (req, res, next) => {
   const invalidFields = Object.keys(data).filter(entry => {
     return !VALID_PROPERTIES.includes(entry);
   })
-  if (invalidFields.length) {
+  const invalidFieldsFilter = invalidFields.filter(field => {
+    return field !== "reservation_id" && field !== "created_at" && field !== "updated_at";
+  });
+  if (invalidFieldsFilter.length) {
     next({
       status: 400,
-      message: `Invalid Field(s) => ${invalidFields.join(", ")}`
+      message: `Invalid Field(s) => ${invalidFieldsFilter.join(", ")}`
     })
   }
   res.locals.data = data;
@@ -35,7 +38,7 @@ const hasRequiredProperties = (req, res, next) => {
   try {
       VALID_PROPERTIES.forEach(prop => {
         if (!res.locals.data[prop]) {
-          const error = new Error(`A ${prop} property is required.wecdedwc`);
+          const error = new Error(`A ${prop} property is required`);
           error.status = 400;
           throw error;
         }
@@ -147,6 +150,22 @@ async function validateUpdate(req, res, next) {
   next();
 }
 
+async function reservationExists(req, res, next) {
+  const { reservationId } = req.params;
+  try {
+    const data = await reservationsService.read(parseInt(reservationId));
+    if (!data) {
+      next({
+        status: 404,
+        message: 'Reservation does not exist'
+      })
+    }
+  } catch (err) {
+    next(err)
+  }
+  next();
+}
+
 
 async function list(req, res, next) {
   if (req.query.date) {
@@ -222,10 +241,9 @@ async function update(req, res, next) {
 }
 
 async function updateReservation(req, res, next) {
-  //console.log(req.body.data);
   try {
-    const data = await reservationsService.updateReservation(req.body.data);
-    res.json({ data: { data }})
+    const data = await reservationsService.updateReservation(res.locals.data);
+    res.json({ data: data })
   } catch (err) {
     next(err);
   }
@@ -241,5 +259,10 @@ module.exports = {
            asyncErrorBoundary(create)],
   read: asyncErrorBoundary(read),
   update: [asyncErrorBoundary(validateUpdate), asyncErrorBoundary(update)],
-  updateReservation: asyncErrorBoundary(updateReservation)
+  updateReservation: [asyncErrorBoundary(reservationExists), 
+                      hasOnlyValidProperties,
+                      hasRequiredProperties,
+                      validateDateTimePeople,
+                      validateTargetDate,
+                      asyncErrorBoundary(updateReservation)]
 };
