@@ -124,7 +124,7 @@ function Dashboard({ curDate }) {
       <h4>Tables</h4>
       {tables.map(table => {
         return (
-          <div className="m-3" style={{backgroundColor: "lightblue"}} key={table.table_id}>
+          <div className="card m-3 p-2"  key={table.table_id}>
             <p>Table Name: {table.table_name}</p>
             <p>Capacity: {table.capacity}</p>
             {table.reservation_id ? 
@@ -142,39 +142,37 @@ function Dashboard({ curDate }) {
   //res.reservation_status[0].toUpperCase() + res.reservation_status.slice(1)
   return (
     <main>
-      <h1>Dashboard</h1>
+      <h1 className="text-center my-4">Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date: {date}</h4>
+        <h5 className="text-center mb-0">Reservations for date: {date}</h5>
       </div>
       <ErrorAlert error={reservationsError} />
       {/*JSON.stringify(reservations)*/}
       {reservations ? reservations.map(res => {
         return (
-          <div key={res.reservation_id}>
+          <div key={res.reservation_id} className="card p-4 my-2">
             {res.reservation_status !== "finished" ?
-            <div key={Math.random()} style={{backgroundColor: "gainsboro"}}>
-              <p>Reservation id: {res.reservation_id}</p>
-              <p data-reservation-id-status={res.reservation_id}>Reservation status: {res.status}</p>
-              <p>First name: {res.first_name}</p>
-              <p>Last name: {res.last_name}</p>
-              <p>Phone: {res.mobile_number}</p>
+            <div key={Math.random()}>
+              <p>Reservation for: </p>
+              <h4 className="mb-2 py-0">{res.first_name} {res.last_name}</h4>
+              <p>Party of {res.people} - Reservation #{res.reservation_id}</p>
+              <p data-reservation-id-status={res.reservation_id}>Status: {res.status[0].toUpperCase() + res.status.slice(1)}</p>
               <p>Time: {res.reservation_time}</p>
-              <p>People: {res.people}</p>
+              <p>Phone: {res.mobile_number}</p>
               {res.status === "booked" ? 
-              <Link to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
+              <Link type="button" className="btn btn-secondary" to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
               : ""}
-              <Link to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
-              <button data-reservation-id-cancel={res.reservation_id} onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
-              <br/>
+              <Link type="button" className="btn btn-success mx-2" to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
+              <button type="button" className="btn btn-danger" data-reservation-id-cancel={res.reservation_id} onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
             </div> : ""}
           </div>
         )
       }) : ""}
-      <div className="m-3">
-        <button onClick={() => alterQuery("prev")}>Previous</button>
+      <div className="text-center my-4">
+        <button type="button" className="btn btn-primary" onClick={() => alterQuery("prev")}>Previous</button>
         {/*<button onClick={() => setDate(previous(date))}>Previous</button>*/}
-        <button onClick={() => alterQuery()}>Today</button>
-        <button onClick={() => alterQuery("next")}>Next</button>
+        <button type="button" className="btn btn-primary mx-2" onClick={() => alterQuery()}>Today</button>
+        <button type="button" className="btn btn-primary" onClick={() => alterQuery("next")}>Next</button>
       </div>
       {tables ? tablesDiv : ""}
     </main>

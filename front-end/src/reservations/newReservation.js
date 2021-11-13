@@ -5,8 +5,7 @@ function NewReservation(props) {
 
     return (
         <div>
-            {props.text}
-            <h2>Make a Reservation</h2>
+            <h2 className="text-center my-4">Make a Reservation</h2>
             <FormComponent />
         </div>
     )

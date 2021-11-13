@@ -151,10 +151,11 @@ function FormComponent({ reservation }) {
         }
     }
 
+    //pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
     return (
         <div>
             <ErrorAlert error={error} />
-            <form onSubmit={(event) => handleSubmit(event)}>
+            {/*<form onSubmit={(event) => handleSubmit(event)}>
                 <label htmlFor="first_name" style={{color: "green"}}>
                     First Name:
                     <input value={formData["first_name"]}
@@ -175,11 +176,11 @@ function FormComponent({ reservation }) {
                            required />
                 </label>
                 <br />
-                {/*pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"*/}
                 <label htmlFor="mobile_number" style={{color: "green"}}>
                     Mobile Number:
                     <input value={formData["mobile_number"]}
                            type="text"
+                           className="float-end"
                            placeholder="888-888-8888"
                            id="mobile_number" 
                            name="mobile_number"
@@ -220,6 +221,45 @@ function FormComponent({ reservation }) {
                 <br />
                 <button type="submit">Submit</button>
                 <button onClick={() => history.goBack()}>Cancel</button>
+            </form>*/}
+            <form onSubmit={(event) => handleSubmit(event)}>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default">First Name</span>
+                    <input type="text" 
+                           class="form-control" 
+                           aria-label="Sizing example input" 
+                           aria-describedby="inputGroup-sizing-default"
+                           placeholder="ex. George" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Last Name</span>
+                    <input type="text" 
+                           class="form-control" 
+                           aria-label="Sizing example input" 
+                           aria-describedby="inputGroup-sizing-sm" 
+                           placeholder="ex. Bransen"
+                           />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Mobile Number</span>
+                    <input type="text" class="form-control" placeholder="123-4567" aria-label="Username" aria-describedby="basic-addon1" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Reservation Date</span>
+                    <input type="date" class="form-control" placeholder="123-4567" aria-label="Username" aria-describedby="basic-addon1" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Reservation Time</span>
+                    <input type="time" class="form-control" placeholder="123-4567" aria-label="Username" aria-describedby="basic-addon1" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Party Size</span>
+                    <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" />
+                </div>
+                <div className="text-center">
+                    <button type="submit" className="btn btn-warning mx-2 mb-4">Submit</button>
+                    <button type="button" className="btn btn-secondary mx-2 mb-4" onClick={() => history.goBack()}>Cancel</button>
+                </div>     
             </form>
         </div>
     )
