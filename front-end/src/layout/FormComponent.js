@@ -32,6 +32,7 @@ function FormComponent({ reservation }) {
     const [error, setError] = useState(null);
 
     function updateData(e, type) {
+        console.log(formData)
         if (type === "first_name") {
             let updatedFormData = {
                 ...formData,
@@ -225,36 +226,87 @@ function FormComponent({ reservation }) {
             <form onSubmit={(event) => handleSubmit(event)}>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">First Name</span>
-                    <input type="text" 
+                    <input value={formData["first_name"]}
+                           type="text"
+                           id="first_name" 
+                           name="first_name" 
+                           onChange={(e, type = "first_name") => updateData(e, type)}
+                           required
+                           type="text" 
                            class="form-control" 
-                           aria-label="Sizing example input" 
+                           aria-label="first_name" 
                            aria-describedby="inputGroup-sizing-default"
                            placeholder="ex. George" />
                 </div>
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-sm">Last Name</span>
-                    <input type="text" 
+                    <span class="input-group-text" id="basic-addon1">Last Name</span>
+                    <input value={formData["last_name"]}
+                           type="text"
+                           id="last_name" 
+                           name="last_name"
+                           onChange={(e, type = "last_name") => updateData(e, type)}
+                           required
+                           type="text"
                            class="form-control" 
-                           aria-label="Sizing example input" 
-                           aria-describedby="inputGroup-sizing-sm" 
+                           aria-label="Last Name" 
+                           aria-describedby="basic-addon1" 
                            placeholder="ex. Bransen"
                            />
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Mobile Number</span>
-                    <input type="text" class="form-control" placeholder="123-4567" aria-label="Username" aria-describedby="basic-addon1" />
+                    <input value={formData["mobile_number"]}
+                           type="text"
+                           className="float-end"
+                           placeholder="888-888-8888"
+                           id="mobile_number" 
+                           name="mobile_number"
+                           onChange={(e, type = "mobile_number") => updateData(e, type)}
+                           required
+                           type="text" 
+                           class="form-control" 
+                           placeholder="123-4567" 
+                           aria-label="Mobile_number" 
+                           aria-describedby="basic-addon1" />
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Reservation Date</span>
-                    <input type="date" class="form-control" placeholder="123-4567" aria-label="Username" aria-describedby="basic-addon1" />
+                    <input value={(formData["reservation_date"])}
+                           type="date"
+                           id="reservation_date" 
+                           name="reservation_date"
+                           onChange={(e, type = "reservation_date") => updateData(e, type)}
+                           required
+                           class="form-control" 
+                           placeholder="123-4567" 
+                           aria-label="Rservation_Date" 
+                           aria-describedby="basic-addon1" />
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Reservation Time</span>
-                    <input type="time" class="form-control" placeholder="123-4567" aria-label="Username" aria-describedby="basic-addon1" />
+                    <input value={formData["reservation_time"]}
+                           type="time"
+                           id="reservation_time" 
+                           name="reservation_time"
+                           onChange={(e, type = "reservation_time") => updateData(e, type)}
+                           required 
+                           class="form-control" 
+                           placeholder="123-4567" 
+                           aria-label="Username" 
+                           aria-describedby="basic-addon1" />
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Party Size</span>
-                    <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" />
+                    <input value={formData["people"]}
+                           id="people" 
+                           name="people"
+                           min="1"
+                           onChange={(e, type = "people") => updateData(e, type)}
+                           required 
+                           type="number" 
+                           class="form-control" 
+                           aria-label="People" 
+                           aria-describedby="basic-addon1" />
                 </div>
                 <div className="text-center">
                     <button type="submit" className="btn btn-warning mx-2 mb-4">Submit</button>

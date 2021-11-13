@@ -44,9 +44,9 @@ function NewTable(props) {
 
     return (
         <div>
-            <h2>New Table</h2>
+            <h2 className="text-center mt-4">New Table</h2>
             <br />
-            <form onSubmit={(e) => submitHandler(e)}>
+            {/*<form onSubmit={(e) => submitHandler(e)}>
                 <label htmlFor="table_name">
                     Table Name: 
                     <input value={formData["table_name"]}
@@ -71,6 +71,37 @@ function NewTable(props) {
                 <br />
                 <button type="submit">Submit</button>
                 <button onClick={() => history.goBack()}>Cancel</button>
+            </form>*/}
+            <form onSubmit={(e) => submitHandler(e)}>
+                <div class="mb-3">
+                    <label for="table_name" class="form-label">Table Name</label>
+                    <input value={formData["table_name"]}
+                           name="table_name"
+                           id="table_name" 
+                           type="text"
+                           minLength="2"
+                           onChange={(e, field = "table_name") => updateForm(e, field)}
+                           required
+                           type="text" 
+                           class="form-control" 
+                           placeholder="Red Table" />
+                </div>
+                <div class="mb-3">
+                    <label for="capacity" class="form-label">Capacity</label>
+                    <input value={formData["capacity"] === null ? 1 : formData["capacity"]}
+                           name="capacity"
+                           id="capacity"
+                           type="number"
+                           min="1"
+                           onChange={(e, field = "capacity") => updateForm(e, field)}
+                           required
+                           class="form-control" 
+                           placeholder="3" />
+                </div>
+                <div className="text-center">
+                    <button type="submit" className="btn btn-warning mx-1">Submit</button>
+                    <button type="button" className="btn btn-secondary mx-1" onClick={() => history.goBack()}>Cancel</button>
+                </div> 
             </form>
         </div>
     )
