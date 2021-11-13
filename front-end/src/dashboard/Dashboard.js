@@ -37,9 +37,7 @@ function Dashboard({ curDate }) {
   }
 
   function loadDashboard() {
-    //console.log(date);
-    //console.log(location);
-    //console.log(location.search);
+
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
@@ -49,7 +47,6 @@ function Dashboard({ curDate }) {
       })
       .catch(setReservationsError);
     return () => abortController.abort();
-    //}
   }
 
   function alterQuery(val) {

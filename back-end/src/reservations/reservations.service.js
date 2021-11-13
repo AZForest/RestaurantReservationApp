@@ -53,13 +53,11 @@ function updateStatus(reservationId, status) {
 }
 
 function updateReservation(updatedReservation) {
-  console.log(updatedReservation)
   return knex("reservations")
          .select("*")
          .where({ reservation_id: updatedReservation.reservation_id })
          .update(updatedReservation, "*")
          .then(uR => {
-           console.log(uR[0]);
            return uR[0];
          })
 }

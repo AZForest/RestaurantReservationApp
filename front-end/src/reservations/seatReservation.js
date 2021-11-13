@@ -32,19 +32,16 @@ function SeatReservation() {
     }, [])
 
     const changeSelect = (e) => {
-        //console.log(e.target.value);
         const tableName = e.target.value;
         const foundTable = tables.find(table => table.table_name === tableName);
-        //console.log(foundTable)
         setSelectedValue(foundTable);
-        console.log(selectedValue);
     }
 
     const validateSize = () => {
         return selectedValue.capacity >= reservation.people;
     }
 
-    const submitHandler = (e) => {
+    /*const submitHandler = (e) => {
         e.preventDefault();
         if (validateSize()) {
             axios.put(`${BASE_URL}/tables/${selectedValue.table_id}/seat/`, { data: { reservation_id: reservation.reservation_id } })
@@ -62,7 +59,7 @@ function SeatReservation() {
             const error = new Error("Party size cannot exceed table capacity");
             setError(error);
         }
-    }
+    }*/
 
     async function asyncSubmit(e) {
         e.preventDefault();
@@ -76,6 +73,9 @@ function SeatReservation() {
             } catch(err) {
                 console.log(err);
             }
+        } else {
+            const error = new Error("Party size cannot exceed table capacity");
+            setError(error);
         }
     }
 

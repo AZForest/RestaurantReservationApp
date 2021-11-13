@@ -11,15 +11,11 @@ function EditReservation() {
     const { reservationId } = useParams();
     const [reservation, setReservation] = useState(null);
 
-    
-
     const loadReservation = () => {
         axios.get(`${BASE_URL}/reservations/${reservationId}`)
         .then(res => {
-            console.log(res);
             res.data.data.reservation_date = formatAsDate(res.data.data.reservation_date);
             res.data.data.reservation_time = formatAsTime(res.data.data.reservation_time);
-            console.log(res.data.data);
             setReservation(res.data.data);
         })
         .catch(err => {

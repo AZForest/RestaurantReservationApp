@@ -60,7 +60,7 @@ function NewTable(props) {
                 <br />
                 <label htmlFor="capacity">
                     Capacity:
-                    <input value={formData["capacity"]}
+                    <input value={formData["capacity"] === null ? 1 : formData["capacity"]}
                            name="capacity"
                            id="capacity"
                            type="number"
