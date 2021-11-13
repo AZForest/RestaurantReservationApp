@@ -224,6 +224,7 @@ async function read(req, res, next) {
   const { reservationId } = req.params;
   try {
     const data = await reservationsService.read(parseInt(reservationId));
+    console.log(data);
     res.json({ data })
   } catch(err) {
     next(err);

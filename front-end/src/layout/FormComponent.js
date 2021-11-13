@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ErrorAlert from '../layout/ErrorAlert';
+import { today, asDateString } from "../utils/date-time";
 const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
 
 function FormComponent({ reservation }) {
@@ -23,6 +24,7 @@ function FormComponent({ reservation }) {
         last_name: "",
         mobile_number: "",
         reservation_date: "",
+        //reservation_date: "",
         reservation_time: "",
         people: 1,
         status: "booked"
@@ -32,10 +34,12 @@ function FormComponent({ reservation }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        //console.log(reservation)
+        //console.log(today());
+
     }, [])
 
     function updateData(e, type) {
+        //console.log(today());
         if (type === "first_name") {
             let updatedFormData = {
                 ...formData,
@@ -82,15 +86,16 @@ function FormComponent({ reservation }) {
         const time = formData.reservation_time;
         const dateArr = date.split("-");
         const timeArr = time.split(":");
-        console.log(dateArr);
-        console.log(timeArr)
+        //console.log(dateArr);
+        //console.log(timeArr)
 
-        const targetDate = new Date(dateArr[0], dateArr[1], dateArr[2], timeArr[0], timeArr[1], 0);
-        const targetDay = new Date(date);
+        const targetDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2], timeArr[0], timeArr[1], 0);
+        //console.log(targetDate)
         const errors = [];
         //Checks if Day is Tuesday
-        console.log("Day is " + targetDay.getDay())
-        if (targetDay.getDay() === 1) {
+        console.log("Day is " + targetDate.getDay())
+        if (targetDate.getDay() === 2) {
+            console.log("here");
             const dateError = new Error();
             dateError.message = "We are not open Tuesdays."
             errors.push(dateError);
@@ -114,10 +119,36 @@ function FormComponent({ reservation }) {
         }
         if (errors.length > 0) {
             setError(errors);
-            //return false;
+            return false;
+        } else {
+            return true;
         }
-        return true;
+        
     }
+
+    /*function validateInput2() {
+        const date = formData.reservation_date;
+        const time = formData.reservation_time;
+        const timeArr = time.split(":");
+        const errors = [];
+        //Checks if Day is Tuesday
+        console.log("Day is " + date.getDay())
+        if (date.getDay() === 1) {
+            const dateError = new Error();
+            dateError.message = "We are not open Tuesdays."
+            errors.push(dateError);
+        }
+        //Check if reservation is in the past
+        if (Date.now() >= date.getTime()) {
+            const timeError = new Error("Reservations must be in the future.")
+            errors.push(timeError);
+
+        }
+        let timeDate = new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate(), timeArr[0], timeArr[1], 0);
+        console.log(timeDate.getMinutes());
+        //if (timeDate.getHours())
+        
+    }*/
 
     function handleSubmit(e) {
         e.preventDefault(); 
@@ -155,6 +186,13 @@ function FormComponent({ reservation }) {
             }
             
         }
+    }
+
+    function dateToString(date) {
+        let day = date.getUTCDate();
+        if (String(day).length < 2) day = ("0" + String(day));
+        const x = `${date.getFullYear()}-${date.getUTCMonth() + 1}-${day}`;
+        return x;
     }
 
     return (
@@ -195,7 +233,7 @@ function FormComponent({ reservation }) {
                 <br />
                 <label htmlFor="reservation_date" style={{color: "green"}}>
                     Reservation Date:
-                    <input value={formData["reservation_date"]}
+                    <input value={(formData["reservation_date"])}
                            type="date"
                            id="reservation_date" 
                            name="reservation_date"

@@ -290,7 +290,7 @@ describe("US-06 - Reservation status", () => {
 });
 
 function asDateString(date) {
-  date = new Date(date);
+  //date = new Date(date);
   //console.log(date.getFullYear());
   return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
     .toString(10)
