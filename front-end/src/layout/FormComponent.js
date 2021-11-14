@@ -224,79 +224,76 @@ function FormComponent({ reservation }) {
                 <button onClick={() => history.goBack()}>Cancel</button>
             </form>*/}
             <form onSubmit={(event) => handleSubmit(event)}>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">First Name</span>
+                <div className="mb-3">
+                    <label htmlFor="first_name" className="form-label">First Name</label>
                     <input value={formData["first_name"]}
                            type="text"
                            id="first_name" 
                            name="first_name" 
                            onChange={(e, type = "first_name") => updateData(e, type)}
-                           required
-                           type="text" 
-                           class="form-control" 
+                           required 
+                           className="form-control" 
                            aria-label="first_name" 
                            aria-describedby="inputGroup-sizing-default"
                            placeholder="ex. George" />
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Last Name</span>
+                <div className="mb-3">
+                    <label htmlFor="last_name" className="form-label">Last Name</label>
                     <input value={formData["last_name"]}
                            type="text"
                            id="last_name" 
                            name="last_name"
                            onChange={(e, type = "last_name") => updateData(e, type)}
                            required
-                           type="text"
-                           class="form-control" 
+                           className="form-control" 
                            aria-label="Last Name" 
                            aria-describedby="basic-addon1" 
                            placeholder="ex. Bransen"
                            />
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Mobile Number</span>
+                <div className="mb-3">
+                    <label htmlFor="mobile_number" className="form-label">Mobile Number</label>
                     <input value={formData["mobile_number"]}
                            type="text"
-                           className="float-end"
                            placeholder="888-888-8888"
                            id="mobile_number" 
                            name="mobile_number"
                            onChange={(e, type = "mobile_number") => updateData(e, type)}
                            required
                            type="text" 
-                           class="form-control" 
+                           className="form-control" 
                            placeholder="123-4567" 
                            aria-label="Mobile_number" 
                            aria-describedby="basic-addon1" />
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Reservation Date</span>
+                <div className="mb-3">
+                    <label htmlFor="reservation_date" className="form-label">Reservation Date</label>
                     <input value={(formData["reservation_date"])}
                            type="date"
                            id="reservation_date" 
                            name="reservation_date"
                            onChange={(e, type = "reservation_date") => updateData(e, type)}
                            required
-                           class="form-control" 
+                           className="form-control" 
                            placeholder="123-4567" 
                            aria-label="Rservation_Date" 
                            aria-describedby="basic-addon1" />
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Reservation Time</span>
+                <div className="mb-3">
+                    <label htmlFor="reservation_time" className="form-label">Reservation Time</label>
                     <input value={formData["reservation_time"]}
                            type="time"
                            id="reservation_time" 
                            name="reservation_time"
                            onChange={(e, type = "reservation_time") => updateData(e, type)}
                            required 
-                           class="form-control" 
+                           className="form-control" 
                            placeholder="123-4567" 
                            aria-label="Username" 
                            aria-describedby="basic-addon1" />
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Party Size</span>
+                <div className="mb-3">
+                    <label htmlFor="people" className="form-label">Part Size</label>
                     <input value={formData["people"]}
                            id="people" 
                            name="people"
@@ -304,7 +301,7 @@ function FormComponent({ reservation }) {
                            onChange={(e, type = "people") => updateData(e, type)}
                            required 
                            type="number" 
-                           class="form-control" 
+                           className="form-control" 
                            aria-label="People" 
                            aria-describedby="basic-addon1" />
                 </div>

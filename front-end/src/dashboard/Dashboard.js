@@ -153,8 +153,8 @@ function Dashboard({ curDate }) {
           <div key={res.reservation_id} className="card p-4 my-2">
             {res.reservation_status !== "finished" ?
             <div key={Math.random()}>
-              <p>Reservation for: </p>
-              <h4 className="mb-2 py-0">{res.first_name} {res.last_name}</h4>
+              <p className="pb-0 mb-0">Reservation for: </p>
+              <h4 className="py-0 mb-3 mt-2">{res.first_name} {res.last_name}</h4>
               <p>Party of {res.people} - Reservation #{res.reservation_id}</p>
               <p data-reservation-id-status={res.reservation_id}>Status: {res.status[0].toUpperCase() + res.status.slice(1)}</p>
               <p>Time: {res.reservation_time}</p>

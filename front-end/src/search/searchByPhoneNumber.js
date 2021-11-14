@@ -32,6 +32,7 @@ function SearchByPhoneNumber() {
 
     const findReservations = (e) => {
         e.preventDefault();
+        setReservationsNotFound(false);
         findR();
         /*const abortController = new AbortController();
         setReservationsNotFound(false);
@@ -61,20 +62,21 @@ function SearchByPhoneNumber() {
     }
 
     let reservationsDiv = (
-        <div>
-            {reservations.map(reservation => {
+        <div className="my-3">
+            {reservations.map(res => {
                 return (
-                    <div style={{backgroundColor: "pink", display: "flex"}}>
-                        <ul key={reservation.reservation_id}>
-                            <li>{reservation.first_name}</li>
-                            <li>{reservation.last_name}</li>
-                            <li>{reservation.mobile_number}</li>
-                            <li>{reservation.status}</li>
-                            <li>{reservation.people}</li>
-                        </ul>
-                        <div>
-                            <Link to={`/reservations/${reservation.reservation_id}/edit`}>Edit</Link>
-                            <button data-reservation-id-cancel={reservation.reservation_id} onClick={() => cancelHandler(reservation.reservation_id)}>Cancel</button>
+                    <div className="card p-4 my-2">
+                        <p className="pb-0 mb-0">Reservation for: </p>
+                        <h4 className="py-0 mb-3 mt-2">{res.first_name} {res.last_name}</h4>
+                        <p>Party of {res.people} - Reservation #{res.reservation_id}</p>
+                        <p data-reservation-id-status={res.reservation_id}>Status: {res.status[0].toUpperCase() + res.status.slice(1)}</p>
+                        <p>Time: {res.reservation_time}</p>
+                        <p>Phone: {res.mobile_number}</p>
+                        <div className="text-center">
+                            <Link className="btn btn-secondary mr-1" to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
+                            <button data-reservation-id-cancel={res.reservation_id}
+                                    className="btn btn-danger ml-1" 
+                                    onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
                         </div>
                     </div>
                 )
@@ -82,22 +84,24 @@ function SearchByPhoneNumber() {
         </div>
     )
     let notFoundDiv = (
-        <div>
-            <p>No reservations found</p>
+        <div className="text-center mt-4">
+            <h5>No reservations found</h5>
         </div>
     )
 
     return (
         <div>
-            <h3>Search By Phone Number</h3>
-            <form onSubmit={(e) => findReservations(e)}>
-                <input className="m-2"
+            <h3 className="text-center my-4">Search By Phone Number</h3>
+            <form onSubmit={(e) => findReservations(e)} >
+                <div style={{display: "flex"}}>
+                <input className="mr-3 form-control"
                    type="text"
                    name="mobile_number" 
                    placeholder="Enter a customer's mobile number"
                    onChange={(e) => updateNumber(e)}
                    required/>
-                <button type="submit">Find</button>
+                <button type="submit" className="btn btn-warning">Find</button>
+                </div>
             </form>
             {reservationsDiv}
             {reservationsNotFound ? notFoundDiv : ""}
