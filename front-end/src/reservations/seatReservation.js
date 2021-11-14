@@ -26,6 +26,7 @@ function SeatReservation() {
 
         axios.get(`${BASE_URL}/reservations/${reservationId}`)
         .then(res => {
+            console.log(res.data.data.status)
             setReservation(res.data.data)
         })
         .catch(err => console.log(err));
@@ -79,10 +80,22 @@ function SeatReservation() {
         }
     }
 
+    let reservationDiv = reservation ? (
+        <div className="card p-3 mt-3 mb-3">
+            <h4 className="py-0 mb-3 mt-2">{reservation.first_name} {reservation.last_name}</h4>
+            <p>Party of {reservation.people} - Reservation #{reservation.reservation_id}</p>
+            {/* reservation ? <p data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status[0].toUpperCase() + reservation.status.slice(1)}</p> : ""*/}
+            <p>Time: {reservation.reservation_time}</p>
+            <p className="mb-0">Phone: {reservation.mobile_number}</p>
+        </div>
+    ) : ""
+
+    //style={{fontStyle: "italic"}}
     return (
         <div>
-            <h4>Seat reservation for: Reservation {reservationId}</h4>
-            <h4>Select Table: </h4>
+            <h3 className="text-center mt-3 mb-2">Seat reservation for: </h3>
+            {reservation ? reservationDiv : ""}
+            <h5 className="text-center">Select Table: </h5>
             <ErrorAlert error={error}/>
             <form onSubmit={(e) => asyncSubmit(e)}>
                 <select name="table_id" className="m-3" onChange={(e) => changeSelect(e)}>
@@ -93,8 +106,10 @@ function SeatReservation() {
                     })}
                 </select>
                 <br />
-                <button type="submit">Submit</button>
-                <button onClick={() => history.goBack()}>Cancel</button>
+                <div className="text-center">
+                    <button type="submit" className="btn btn-warning mr-1">Submit</button>
+                    <button onClick={() => history.goBack()} className="btn btn-secondary ml-1">Cancel</button>
+                </div>
             </form>
             
         </div>

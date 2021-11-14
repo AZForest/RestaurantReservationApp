@@ -32,7 +32,6 @@ function FormComponent({ reservation }) {
     const [error, setError] = useState(null);
 
     function updateData(e, type) {
-        console.log(formData)
         if (type === "first_name") {
             let updatedFormData = {
                 ...formData,

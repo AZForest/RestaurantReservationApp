@@ -119,17 +119,39 @@ function Dashboard({ curDate }) {
     }
   }
 
+  let reservationsDiv = ( 
+    <div>
+      {reservations.map(res => {
+        return (
+          <div key={res.reservation_id} className="card p-4 my-2">
+            {res.reservation_status !== "finished" ?
+            <div key={Math.random()}>
+              <p className="pb-0 mb-0">Reservation for: </p>
+              <h4 className="py-0 mb-3 mt-2">{res.first_name} {res.last_name}</h4>
+              <p>Party of {res.people} - Reservation #{res.reservation_id}</p>
+              <p data-reservation-id-status={res.reservation_id}>Status: {res.status[0].toUpperCase() + res.status.slice(1)}</p>
+              <p>Time: {res.reservation_time}</p>
+              <p>Phone: {res.mobile_number}</p>
+              {res.status === "booked" ? 
+              <Link type="button" className="btn btn-warning" to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
+              : ""}
+              <Link type="button" className="btn btn-secondary mx-2" to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
+              <button type="button" className="btn btn-danger" data-reservation-id-cancel={res.reservation_id} onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
+            </div> : ""}
+          </div>
+        )} )}
+    </div>
+  )
+
   let tablesDiv = (
     <div>
-      <h4>Tables</h4>
+      <h3>Tables</h3>
       {tables.map(table => {
         return (
           <div className="card m-3 p-2"  key={table.table_id}>
-            <p>Table Name: {table.table_name}</p>
+            <p >Table: <span style={{fontWeight: "bold"}}>{table.table_name}</span></p>
             <p>Capacity: {table.capacity}</p>
-            {table.reservation_id ? 
-            <p data-table-id-status={table.table_id}>Occupied</p>
-            : <p data-table-id-status={table.table_id}>Free</p>}
+            <p>Status: <span data-table-id-status={table.table_id} style={{fontWeight: "700"}}>{table.reservation_id ? <span className="text-danger"></span> : <span className="text-warning">Free</span>}</span></p>
             {table.reservation_id ?
             <button data-table-id-finish={table.table_id} onClick={() => clickFinish(table)}>Finish</button>
             : ""}
@@ -148,7 +170,7 @@ function Dashboard({ curDate }) {
       </div>
       <ErrorAlert error={reservationsError} />
       {/*JSON.stringify(reservations)*/}
-      {reservations ? reservations.map(res => {
+      {/*{reservations ? reservations.map(res => {
         return (
           <div key={res.reservation_id} className="card p-4 my-2">
             {res.reservation_status !== "finished" ?
@@ -167,13 +189,13 @@ function Dashboard({ curDate }) {
             </div> : ""}
           </div>
         )
-      }) : ""}
+      }) : ""}*/}
       <div className="text-center my-4">
-        <button type="button" className="btn btn-primary" onClick={() => alterQuery("prev")}>Previous</button>
-        {/*<button onClick={() => setDate(previous(date))}>Previous</button>*/}
-        <button type="button" className="btn btn-primary mx-2" onClick={() => alterQuery()}>Today</button>
-        <button type="button" className="btn btn-primary" onClick={() => alterQuery("next")}>Next</button>
+        <button type="button" className="btn btn-warning" onClick={() => alterQuery("prev")}>Previous</button>
+        <button type="button" className="btn btn-warning mx-2" onClick={() => alterQuery()}>Today</button>
+        <button type="button" className="btn btn-warning" onClick={() => alterQuery("next")}>Next</button>
       </div>
+      {reservations ? reservationsDiv : ""}
       {tables ? tablesDiv : ""}
     </main>
   );
