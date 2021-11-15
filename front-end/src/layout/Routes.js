@@ -44,7 +44,7 @@ function Routes() {
       <Route path={`/tables/new`}>
         <NewTable />
       </Route>
-      <Route>
+      <Route path={`/search`}>
         <SearchByPhoneNumber />
       </Route>
       <Route>

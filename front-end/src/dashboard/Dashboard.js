@@ -123,9 +123,9 @@ function Dashboard({ curDate }) {
     <div>
       {reservations.map(res => {
         return (
+          res.status !== "finished" ?
           <div key={res.reservation_id} className="card p-4 my-2">
-            {res.reservation_status !== "finished" ?
-            <div key={Math.random()}>
+            <div>
               <p className="pb-0 mb-0">Reservation for: </p>
               <h4 className="py-0 mb-3 mt-2">{res.first_name} {res.last_name}</h4>
               <p>Party of {res.people} - Reservation #{res.reservation_id}</p>
@@ -137,8 +137,8 @@ function Dashboard({ curDate }) {
               : ""}
               <Link type="button" className="btn btn-secondary mx-2" to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
               <button type="button" className="btn btn-danger" data-reservation-id-cancel={res.reservation_id} onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
-            </div> : ""}
-          </div>
+            </div>
+          </div> : ""
         )} )}
     </div>
   )
@@ -151,9 +151,11 @@ function Dashboard({ curDate }) {
           <div className="card m-3 p-2"  key={table.table_id}>
             <p >Table: <span style={{fontWeight: "bold"}}>{table.table_name}</span></p>
             <p>Capacity: {table.capacity}</p>
-            <p>Status: <span data-table-id-status={table.table_id} style={{fontWeight: "700"}}>{table.reservation_id ? <span className="text-danger"></span> : <span className="text-warning">Free</span>}</span></p>
+            <p>Status: <span data-table-id-status={table.table_id} style={{fontWeight: "700"}}>
+              {table.reservation_id ? <span className="text-danger">Occupied <span className="text-danger" style={{fontWeight: "700"}}>(Reservation #{table.reservation_id})</span></span> : <span className="text-success">Free</span>}</span>
+            </p>
             {table.reservation_id ?
-            <button data-table-id-finish={table.table_id} onClick={() => clickFinish(table)}>Finish</button>
+            <button data-table-id-finish={table.table_id} type="button" className="btn btn-warning" onClick={() => clickFinish(table)}>Finish</button>
             : ""}
           </div>
         )
@@ -166,7 +168,7 @@ function Dashboard({ curDate }) {
     <main>
       <h1 className="text-center my-4">Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h5 className="text-center mb-0">Reservations for date: {date}</h5>
+        <h5 className="text-center mb-0 mx-auto">Reservations for date: {date}</h5>
       </div>
       <ErrorAlert error={reservationsError} />
       {/*JSON.stringify(reservations)*/}
@@ -196,6 +198,7 @@ function Dashboard({ curDate }) {
         <button type="button" className="btn btn-warning" onClick={() => alterQuery("next")}>Next</button>
       </div>
       {reservations ? reservationsDiv : ""}
+      <hr />
       {tables ? tablesDiv : ""}
     </main>
   );

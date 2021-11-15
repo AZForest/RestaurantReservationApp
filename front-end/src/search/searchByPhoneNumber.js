@@ -18,6 +18,7 @@ function SearchByPhoneNumber() {
     function findR() {
         const abortController = new AbortController();
         let mobile_number = mobileNumber;
+
         listReservations({ mobile_number }, abortController.signal)
             .then((res) => {
                 if (res.length > 0) {
@@ -33,6 +34,7 @@ function SearchByPhoneNumber() {
     const findReservations = (e) => {
         e.preventDefault();
         setReservationsNotFound(false);
+        setReservations([])
         findR();
         /*const abortController = new AbortController();
         setReservationsNotFound(false);
@@ -61,11 +63,11 @@ function SearchByPhoneNumber() {
         }
     }
 
-    let reservationsDiv = (
+    let reservationsDiv = reservations ? (
         <div className="my-3">
             {reservations.map(res => {
                 return (
-                    <div className="card p-4 my-2">
+                    <div className="card p-4 my-2" key={res.reservation_id}>
                         <p className="pb-0 mb-0">Reservation for: </p>
                         <h4 className="py-0 mb-3 mt-2">{res.first_name} {res.last_name}</h4>
                         <p>Party of {res.people} - Reservation #{res.reservation_id}</p>
@@ -73,7 +75,10 @@ function SearchByPhoneNumber() {
                         <p>Time: {res.reservation_time}</p>
                         <p>Phone: {res.mobile_number}</p>
                         <div className="text-center">
-                            <Link className="btn btn-secondary mr-1" to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
+                            {res.status === "booked" ? 
+                            <Link type="button" className="btn btn-warning mr-1" to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
+                            : ""}
+                            <Link className="btn btn-secondary mx-1" to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
                             <button data-reservation-id-cancel={res.reservation_id}
                                     className="btn btn-danger ml-1" 
                                     onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
@@ -82,7 +87,7 @@ function SearchByPhoneNumber() {
                 )
             })}
         </div>
-    )
+    ) : ""
     let notFoundDiv = (
         <div className="text-center mt-4">
             <h5>No reservations found</h5>

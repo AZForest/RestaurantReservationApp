@@ -83,7 +83,7 @@ function SeatReservation() {
     let reservationDiv = reservation ? (
         <div className="card p-3 mt-3 mb-3">
             <h4 className="py-0 mb-3 mt-2">{reservation.first_name} {reservation.last_name}</h4>
-            <p>Party of {reservation.people} - Reservation #{reservation.reservation_id}</p>
+            <p>Party of <span className="text-dark" style={{fontWeight: "700", fontSize: "18px"}}>{reservation.people}</span> - Reservation #{reservation.reservation_id}</p>
             {/* reservation ? <p data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status[0].toUpperCase() + reservation.status.slice(1)}</p> : ""*/}
             <p>Time: {reservation.reservation_time}</p>
             <p className="mb-0">Phone: {reservation.mobile_number}</p>
@@ -95,16 +95,22 @@ function SeatReservation() {
         <div>
             <h3 className="text-center mt-3 mb-2">Seat reservation for: </h3>
             {reservation ? reservationDiv : ""}
-            <h5 className="text-center">Select Table: </h5>
+            <h5 className="text-center mt-4">Select Table: </h5>
             <ErrorAlert error={error}/>
             <form onSubmit={(e) => asyncSubmit(e)}>
-                <select name="table_id" className="m-3" onChange={(e) => changeSelect(e)}>
-                    {tables.map(table => {
-                            return (
-                            <option key={table.table_id} value={tables ? table.table_name: ""}>{table.table_name} - {table.capacity}</option>
-                        )
-                    })}
-                </select>
+                <div style={{display: "flex", alignItems: "center"}}>
+                    <select name="table_id"
+                        style={{width: "200px"}}
+                        className="m-2 p-1 mx-auto" 
+                        onChange={(e) => changeSelect(e)}>
+                        {tables.map(table => {
+                                return (
+                                <option key={table.table_id} value={tables ? table.table_name: ""}>{table.table_name} - {table.capacity}</option>
+                            )
+                        })}
+                    </select>
+                </div>
+                <div className="text-center">(Name - Capacity)</div>
                 <br />
                 <div className="text-center">
                     <button type="submit" className="btn btn-warning mr-1">Submit</button>
