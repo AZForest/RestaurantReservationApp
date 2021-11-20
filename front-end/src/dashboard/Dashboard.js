@@ -16,12 +16,12 @@ const { REACT_APP_API_BASE_URL: BASE_URL } = process.env;
 function Dashboard({ curDate }) {
 
   const location = useLocation();
-  const x = location.search ? location.search.slice(6) : curDate;
+  const initialDate = location.search ? location.search.slice(6) : curDate;
 
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
-  const [date, setDate] = useState(x);
+  const [date, setDate] = useState(initialDate);
   const history = useHistory();
   
   useEffect(loadDashboard, [date, tables]);
@@ -37,7 +37,6 @@ function Dashboard({ curDate }) {
   }
 
   function loadDashboard() {
-
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
@@ -52,7 +51,6 @@ function Dashboard({ curDate }) {
   function alterQuery(val) {
     if (val === "prev") {
       const prevDate = previous(date);
-      //location.search = `?date=${prevDate}`;
       setDate(prevDate);
       history.push({
         pathname: `/dashboard`,
@@ -60,7 +58,6 @@ function Dashboard({ curDate }) {
       })
     } else if (val === "next") {
       const nextDate = next(date);
-      //location.search = `?date=${nextDate}`;
       setDate(nextDate);
       history.push({
         pathname: `/dashboard`,
@@ -78,6 +75,7 @@ function Dashboard({ curDate }) {
     }
   }
 
+  //Delete function which uses Promise chaining instead of async/await
   /*function deleteHandler(table) {
     axios.delete(`${BASE_URL}/tables/${table.table_id}/seat`)
     .then(res => {
@@ -97,7 +95,6 @@ function Dashboard({ curDate }) {
 
   async function asyncDelete(table) {
     try {
-      // const [res1, res2]
       await Promise.all([
         axios.delete(`${BASE_URL}/tables/${table.table_id}/seat`),
         axios.put(`${BASE_URL}/reservations/${table.reservation_id}/status`, { data: { status: "finished" } })
@@ -115,7 +112,7 @@ function Dashboard({ curDate }) {
             loadDashboard();
         })
         .catch(err => {
-            console.log(err);
+          console.log(err);
         })
     }
   }
@@ -164,7 +161,6 @@ function Dashboard({ curDate }) {
     </div>
   )
 
-  //res.reservation_status[0].toUpperCase() + res.reservation_status.slice(1)
   return (
     <main>
       <h1 className="text-center my-4">Dashboard</h1>
@@ -172,7 +168,6 @@ function Dashboard({ curDate }) {
         <h5 className="text-center mb-0 mx-auto">Reservations for date: {date}</h5>
       </div>
       <ErrorAlert error={reservationsError} />
-      {/*JSON.stringify(reservations)*/}
       <div className="text-center my-4">
         <button type="button" className="btn btn-warning" onClick={() => alterQuery("prev")}>Previous</button>
         <button type="button" className="btn btn-warning mx-2" onClick={() => alterQuery()}>Today</button>

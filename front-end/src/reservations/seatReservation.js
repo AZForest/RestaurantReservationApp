@@ -42,6 +42,7 @@ function SeatReservation() {
         return selectedValue.capacity >= reservation.people;
     }
 
+    //Submit function that uses promise chaining instead of async/await
     /*const submitHandler = (e) => {
         e.preventDefault();
         if (validateSize()) {
@@ -66,7 +67,6 @@ function SeatReservation() {
         e.preventDefault();
         if (validateSize()) {
             try {
-                //const [res1, res2] = 
                 await Promise.all([
                     axios.put(`${BASE_URL}/tables/${selectedValue.table_id}/seat/`, { data: { reservation_id: reservation.reservation_id } }),
                     axios.put(`${BASE_URL}/reservations/${reservation.reservation_id}/status`, { data: { status: "seated" }})
@@ -74,6 +74,7 @@ function SeatReservation() {
                 history.push("/")
             } catch(err) {
                 console.log(err);
+                setError(err);
             }
         } else {
             const error = new Error("Party size cannot exceed table capacity");
@@ -85,13 +86,11 @@ function SeatReservation() {
         <div className="card p-3 mt-3 mb-3">
             <h4 className="py-0 mb-3 mt-2">{reservation.first_name} {reservation.last_name}</h4>
             <p>Party of <span className="text-dark" style={{fontWeight: "700", fontSize: "18px"}}>{reservation.people}</span> - Reservation #{reservation.reservation_id}</p>
-            {/* reservation ? <p data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status[0].toUpperCase() + reservation.status.slice(1)}</p> : ""*/}
             <p>Time: {reservation.reservation_time}</p>
             <p className="mb-0">Phone: {reservation.mobile_number}</p>
         </div>
     ) : ""
 
-    //style={{fontStyle: "italic"}}
     return (
         <div>
             <h3 className="text-center mt-3 mb-2">Seat reservation for: </h3>

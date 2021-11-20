@@ -15,7 +15,7 @@ function SearchByPhoneNumber() {
         setMobileNumber(e.target.value);
     }
 
-    function findR() {
+    function findReservations() {
         const abortController = new AbortController();
         let mobile_number = mobileNumber;
 
@@ -31,31 +31,18 @@ function SearchByPhoneNumber() {
         return () => abortController.abort();
     }
 
-    const findReservations = (e) => {
+    const preFind = (e) => {
         e.preventDefault();
         setReservationsNotFound(false);
         setReservations([])
-        findR();
-        /*const abortController = new AbortController();
-        setReservationsNotFound(false);
-        let mobile_number = mobileNumber;
-        listReservations({ mobile_number }, abortController.signal)
-            .then((res) => {
-                if (res.length > 0) {
-                    setReservations(res);
-                } else {
-                    setReservationsNotFound(true);
-                }
-            })
-            .catch(err => console.log(err));
-        return () => abortController.abort();*/
+        findReservations();
     }
 
     const cancelHandler = (reservationId) => {
         if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
             axios.put(`${BASE_URL}/reservations/${reservationId}/status`, { data: { status: "cancelled" } })
             .then(res => {
-                findR();
+                findReservations();
             })
             .catch(err => {
                 console.log(err);
@@ -97,7 +84,7 @@ function SearchByPhoneNumber() {
     return (
         <div>
             <h3 className="text-center my-4">Search By Phone Number</h3>
-            <form onSubmit={(e) => findReservations(e)} >
+            <form onSubmit={(e) => preFind(e)} >
                 <div style={{display: "flex"}}>
                 <input className="mr-3 form-control"
                    type="text"
