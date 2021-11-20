@@ -46,32 +46,6 @@ function NewTable(props) {
         <div>
             <h2 className="text-center mt-4">New Table</h2>
             <br />
-            {/*<form onSubmit={(e) => submitHandler(e)}>
-                <label htmlFor="table_name">
-                    Table Name: 
-                    <input value={formData["table_name"]}
-                           name="table_name"
-                           id="table_name" 
-                           type="text"
-                           minLength="2"
-                           onChange={(e, field = "table_name") => updateForm(e, field)}
-                           required />
-                </label>
-                <br />
-                <label htmlFor="capacity">
-                    Capacity:
-                    <input value={formData["capacity"] === null ? 1 : formData["capacity"]}
-                           name="capacity"
-                           id="capacity"
-                           type="number"
-                           min="1"
-                           onChange={(e, field = "capacity") => updateForm(e, field)}
-                           required />
-                </label>
-                <br />
-                <button type="submit">Submit</button>
-                <button onClick={() => history.goBack()}>Cancel</button>
-            </form>*/}
             <form onSubmit={(e) => submitHandler(e)}>
                 <div className="mb-3">
                     <label htmlFor="table_name" className="form-label">Table Name</label>
@@ -82,7 +56,6 @@ function NewTable(props) {
                            minLength="2"
                            onChange={(e, field = "table_name") => updateForm(e, field)}
                            required
-                           type="text" 
                            className="form-control" 
                            placeholder="Red Table" />
                 </div>

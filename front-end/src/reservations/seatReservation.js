@@ -66,7 +66,8 @@ function SeatReservation() {
         e.preventDefault();
         if (validateSize()) {
             try {
-                const [res1, res2] = await Promise.all([
+                //const [res1, res2] = 
+                await Promise.all([
                     axios.put(`${BASE_URL}/tables/${selectedValue.table_id}/seat/`, { data: { reservation_id: reservation.reservation_id } }),
                     axios.put(`${BASE_URL}/reservations/${reservation.reservation_id}/status`, { data: { status: "seated" }})
                 ])

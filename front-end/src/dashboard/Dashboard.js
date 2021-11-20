@@ -97,7 +97,8 @@ function Dashboard({ curDate }) {
 
   async function asyncDelete(table) {
     try {
-      const [res1, res2] = await Promise.all([
+      // const [res1, res2]
+      await Promise.all([
         axios.delete(`${BASE_URL}/tables/${table.table_id}/seat`),
         axios.put(`${BASE_URL}/reservations/${table.reservation_id}/status`, { data: { status: "finished" } })
       ])
@@ -172,26 +173,6 @@ function Dashboard({ curDate }) {
       </div>
       <ErrorAlert error={reservationsError} />
       {/*JSON.stringify(reservations)*/}
-      {/*{reservations ? reservations.map(res => {
-        return (
-          <div key={res.reservation_id} className="card p-4 my-2">
-            {res.reservation_status !== "finished" ?
-            <div key={Math.random()}>
-              <p className="pb-0 mb-0">Reservation for: </p>
-              <h4 className="py-0 mb-3 mt-2">{res.first_name} {res.last_name}</h4>
-              <p>Party of {res.people} - Reservation #{res.reservation_id}</p>
-              <p data-reservation-id-status={res.reservation_id}>Status: {res.status[0].toUpperCase() + res.status.slice(1)}</p>
-              <p>Time: {res.reservation_time}</p>
-              <p>Phone: {res.mobile_number}</p>
-              {res.status === "booked" ? 
-              <Link type="button" className="btn btn-secondary" to={`/reservations/${res.reservation_id}/seat`}>Seat</Link>
-              : ""}
-              <Link type="button" className="btn btn-success mx-2" to={`/reservations/${res.reservation_id}/edit`}>Edit</Link>
-              <button type="button" className="btn btn-danger" data-reservation-id-cancel={res.reservation_id} onClick={() => cancelHandler(res.reservation_id)}>Cancel</button>
-            </div> : ""}
-          </div>
-        )
-      }) : ""}*/}
       <div className="text-center my-4">
         <button type="button" className="btn btn-warning" onClick={() => alterQuery("prev")}>Previous</button>
         <button type="button" className="btn btn-warning mx-2" onClick={() => alterQuery()}>Today</button>

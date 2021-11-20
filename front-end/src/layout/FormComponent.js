@@ -254,12 +254,10 @@ function FormComponent({ reservation }) {
                     <label htmlFor="mobile_number" className="form-label">Mobile Number</label>
                     <input value={formData["mobile_number"]}
                            type="text"
-                           placeholder="888-888-8888"
                            id="mobile_number" 
                            name="mobile_number"
                            onChange={(e, type = "mobile_number") => updateData(e, type)}
                            required
-                           type="text" 
                            className="form-control" 
                            placeholder="123-4567" 
                            aria-label="Mobile_number" 
