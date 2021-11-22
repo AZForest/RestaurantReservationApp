@@ -20,13 +20,15 @@ function SeatReservation() {
                 return table.reservation_id === null;
             })
             setTables(avTables);
-            if (tables.length > 1) setSelectedValue(tables[0]);
+            
+            if (tables.length > 1) {
+                setSelectedValue(tables[0])
+            };
         })
         .catch(err => console.log(err));
 
         axios.get(`${BASE_URL}/reservations/${reservationId}`)
         .then(res => {
-            console.log(res.data.data.status)
             setReservation(res.data.data)
         })
         .catch(err => console.log(err));
@@ -38,8 +40,8 @@ function SeatReservation() {
         setSelectedValue(foundTable);
     }
 
-    const validateSize = () => {
-        return selectedValue.capacity >= reservation.people;
+    const validateSize = (postValue) => {
+        return postValue.capacity >= reservation.people;
     }
 
     //Submit function that uses promise chaining instead of async/await
@@ -65,10 +67,11 @@ function SeatReservation() {
 
     async function asyncSubmit(e) {
         e.preventDefault();
-        if (validateSize()) {
+        let postValue = selectedValue.capacity ? selectedValue : tables[0];
+        if (validateSize(postValue)) {
             try {
                 await Promise.all([
-                    axios.put(`${BASE_URL}/tables/${selectedValue.table_id}/seat/`, { data: { reservation_id: reservation.reservation_id } }),
+                    axios.put(`${BASE_URL}/tables/${postValue.table_id}/seat/`, { data: { reservation_id: reservation.reservation_id } }),
                     axios.put(`${BASE_URL}/reservations/${reservation.reservation_id}/status`, { data: { status: "seated" }})
                 ])
                 history.push("/")
