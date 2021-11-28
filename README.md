@@ -7,6 +7,10 @@
  * [Deployed Client Application](https://restaurant-client-vercel.vercel.app)
  * [Deployed Back-End Application](https://restaurant-res-backend01.herokuapp.com)
 
+## Download Instructions
+
+(to be updated soon)
+
 ## Screenshots
 
 (to be updated soon)
