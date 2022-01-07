@@ -9,7 +9,10 @@
 
 ## Download Instructions
 
-(to be updated soon)
+* Clone the repository "git clone [insert repo link here]"
+* Install Node on machine if not already installed: [Node.js](https://nodejs.org/en/download/)
+* Navigate into cloned folder and enter command "npm install"
+* Enter the command "npm run start"
 
 ## Screenshots
 
