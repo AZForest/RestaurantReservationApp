@@ -49,6 +49,7 @@
 ### Built with:
 
  * React, with [create-react-app](https://github.com/facebook/create-react-app)
+ * Bootsrap
  * Node/Express
  * PostgresQL
 
